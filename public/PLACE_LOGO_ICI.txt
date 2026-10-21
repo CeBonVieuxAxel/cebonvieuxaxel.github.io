@@ -1,0 +1,2 @@
+Place ici le logo du site sous le nom exact : image_c1e856.png
+(il est servi à la racine : /image_c1e856.png, utilisé dans Navbar.jsx)
