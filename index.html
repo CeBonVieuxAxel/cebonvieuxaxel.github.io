@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio Axel Lefebvre</title>
+<meta name="description" content="Portfolio d'Axel Lefebvre, étudiant en BTS SIO option SLAM à Metz : parcours, compétences, projets et diplômes.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FFD23F'/%3E%3Ctext x='32' y='43' font-size='30' font-weight='800' text-anchor='middle' font-family='Arial' fill='%2314123A'%3EAL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hud">
+  <div class="hud-in">
+    <a class="logo" href="#top" aria-label="Retour en haut">AL</a>
+    <span class="lvl" id="lvl">NIV 1 · Accueil</span>
+    <div class="xp" aria-hidden="true"><i id="xp"></i></div>
+    <button class="theme" id="theme" type="button" aria-label="Changer de thème">Thème</button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero" data-lvl="1" data-name="Accueil">
+  <div class="wrap hero-in">
+    <div class="shape s1" data-speed="0.18"></div>
+    <div class="shape s2" data-speed="-0.12"></div>
+    <div class="shape s3" data-speed="0.25"></div>
+    <p class="tag rv">Portfolio · Metz, Grand Est</p>
+    <h1 class="rv" style="--d:1">Salut, moi c'est <span class="hl">Axel</span> Lefebvre.</h1>
+    <p class="hero-sub rv" style="--d:2">Étudiant en BTS Services informatiques aux organisations, option SLAM. J'aime construire des applications web, sécuriser des réseaux et faire tourner des modèles d'IA en local.</p>
+    <p class="typing rv" style="--d:3" aria-live="off">&gt; je fais du <b id="typed">développement web</b><span class="caret"></span></p>
+    <div class="cta rv" style="--d:4">
+      <a class="btn primary" href="#projets">Voir mes projets</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/axel-lefebvre-088089422/" target="_blank" rel="noopener">Mon LinkedIn</a>
+    </div>
+  </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track" id="track"></div>
+</div>
+
+<section id="joueur" data-lvl="2" data-name="Joueur 1">
+  <div class="wrap">
+    <p class="tag rv">Niveau 2</p>
+    <h2 class="rv">À propos de moi</h2>
+    <div class="about">
+      <div>
+        <p class="rv">Je prépare un BTS SIO option SLAM (Solutions Logicielles et Applications Métiers) au lycée Robert Schuman à Metz. Cette option forme au développement d'applications, du site web à l'application métier.</p>
+        <p class="rv" style="--d:1">Avant cela, un bac CIEL (Cybersécurité, Informatique et réseaux ÉLectroniques) obtenu avec mention bien m'a donné de solides bases en réseaux et en sécurité.</p>
+        <p class="rv" style="--d:2">En mars et avril 2026, j'ai fait un stage de deux mois à la clinique chirurgicale Ambroise Paré, à Thionville. J'y ai assuré le support des systèmes informatiques et mis en pratique Microsoft Office, les modèles de langage locaux (LLM) et l'IA.</p>
+      </div>
+      <aside class="sticker rv" style="--d:2">
+        <p class="stats-title">Fiche personnage</p>
+        <dl class="stats" style="margin:0">
+          <div class="stat"><dt>Classe</dt><dd>Développeur SLAM</dd></div>
+          <div class="stat"><dt>Niveau actuel</dt><dd>BTS SIO, 1re année</dd></div>
+          <div class="stat"><dt>Base</dt><dd>Metz</dd></div>
+          <div class="stat"><dt>Bac</dt><dd>CIEL, mention bien</dd></div>
+          <div class="stat"><dt>Quête en cours</dt><dd>BTS 2026-2028</dd></div>
+          <div class="stat"><dt>Projet perso</dt><dd>Undercover</dd></div>
+        </dl>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section id="parcours" data-lvl="3" data-name="Parcours">
+  <div class="wrap">
+    <p class="tag rv">Niveau 3</p>
+    <h2 class="rv">Mon parcours</h2>
+    <div class="path" id="path">
+      <div class="path-fill" id="pathfill"></div>
+      <article class="node rv">
+        <p class="when">SEPT. 2022 → JUILLET 2026</p>
+        <h3>Bac CIEL</h3>
+        <p class="where">Lycée polyvalent La Briquerie</p>
+        <p>Cybersécurité, informatique et réseaux électroniques. Bases solides en réseaux, en systèmes et en sécurité informatique.</p>
+        <span class="badge m">Mention bien</span><span class="badge">Niveau bac</span>
+      </article>
+      <article class="node rv">
+        <p class="when">MARS → AVRIL 2026</p>
+        <h3>Stage de 2 mois</h3>
+        <p class="where">Clinique chirurgicale Ambroise Paré · Thionville</p>
+        <p>Support des systèmes informatiques, utilisation de Microsoft Office, de modèles de langage locaux (LLM) et d'outils d'IA dans un environnement de santé.</p>
+        <span class="badge p">Support IT</span><span class="badge">LLM locaux</span><span class="badge">IA</span>
+      </article>
+      <article class="node now rv">
+        <p class="when">SEPT. 2026 → JUILLET 2028 · EN COURS</p>
+        <h3>BTS SIO option SLAM</h3>
+        <p class="where">Lycée Robert Schuman · Metz</p>
+        <p>Services informatiques aux organisations, option Solutions Logicielles et Applications Métiers. Développement, bases de données et applications web.</p>
+        <span class="badge p">En cours</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="competences" data-lvl="4" data-name="Compétences">
+  <div class="wrap">
+    <p class="tag rv">Niveau 4</p>
+    <h2 class="rv">Mon inventaire</h2>
+    <div class="inv">
+      <article class="sticker slot rv"><span class="ico" style="background:var(--yellow)">&lt;/&gt;</span><h3>Applications web</h3><p>HTML et création d'applications web en ligne.</p><div class="pips" data-n="3"></div></article>
+      <article class="sticker slot rv" style="--d:1"><span class="ico" style="background:var(--mint)">VM</span><h3>Virtualisation</h3><p>Créer et administrer des machines virtuelles.</p><div class="pips" data-n="3"></div></article>
+      <article class="sticker slot rv" style="--d:2"><span class="ico" style="background:var(--pink)">NET</span><h3>Réseaux</h3><p>Gestion de réseaux, acquise en bac CIEL.</p><div class="pips" data-n="3"></div></article>
+      <article class="sticker slot rv" style="--d:3"><span class="ico" style="background:var(--yellow)">SEC</span><h3>Cybersécurité</h3><p>Bases en sécurité des systèmes et des réseaux, et conception d'une messagerie chiffrée de bout en bout.</p><div class="pips" data-n="3"></div></article>
+      <article class="sticker slot rv" style="--d:4"><span class="ico" style="background:var(--mint)">IA</span><h3>IA et LLM locaux</h3><p>Utilisation de modèles de langage locaux en situation réelle.</p><div class="pips" data-n="3"></div></article>
+      <article class="sticker slot rv" style="--d:5"><span class="ico" style="background:var(--pink)">MS</span><h3>Microsoft Office</h3><p>Pratiqué au quotidien pendant mon stage à la clinique.</p><div class="pips" data-n="4"></div></article>
+    </div>
+  </div>
+</section>
+
+<section id="projets" data-lvl="5" data-name="Projets">
+  <div class="wrap">
+    <p class="tag rv">Niveau 5</p>
+    <h2 class="rv">Mes projets</h2>
+    <div class="proj">
+      <article class="sticker card rv">
+        <div class="top a"><span class="big">Undercover</span></div>
+        <h3>Undercover</h3>
+        <p>Une messagerie privée, chiffrée et décentralisée pensée pour les entreprises, que je conçois et développe seul. Pas de numéro ni d'e-mail : chaque appareil génère ses propres clés. Les messages passent en pair à pair, ou par un relais chiffré si le destinataire est hors ligne. Projet en cours de développement.</p>
+        <div><span class="badge">Chiffrement E2E</span><span class="badge m">Pair à pair</span><span class="badge p">Signal Protocol</span><span class="badge">WebRTC</span></div>
+        <a class="link" href="https://undercoverapp.axellefebvre-pro57000.workers.dev/" target="_blank" rel="noopener">Découvrir Undercover ↗</a>
+      </article>
+      <article class="sticker card rv" style="--d:1">
+        <div class="top b"><span class="big">GitHub</span></div>
+        <h3>Mon code</h3>
+        <p>Mes dépôts et mes essais de développement se trouvent sur mon profil GitHub, sous le pseudo CeBonVieuxAxel.</p>
+        <a class="link" href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener">github.com/CeBonVieuxAxel ↗</a>
+      </article>
+      <article class="sticker card rv" style="--d:2">
+        <div class="top c"><span class="big">Stage</span></div>
+        <h3>Support IT en clinique</h3>
+        <p>Deux mois à la clinique Ambroise Paré : assistance sur les systèmes informatiques, Microsoft Office, LLM locaux et IA.</p>
+        <a class="link" href="#parcours">Voir dans le parcours ↓</a>
+      </article>
+    </div>
+    <p class="note rv">Mes autres projets sont présentés sur mon profil LinkedIn, dans la rubrique Projets.</p>
+    <div class="links rv"><a class="btn primary" href="https://www.linkedin.com/in/axel-lefebvre-088089422/" target="_blank" rel="noopener">Voir sur LinkedIn ↗</a></div>
+  </div>
+</section>
+
+<section id="diplomes" data-lvl="6" data-name="Diplômes">
+  <div class="wrap">
+    <p class="tag rv">Niveau 6</p>
+    <h2 class="rv">Mes diplômes</h2>
+    <div class="dip">
+      <button class="sticker diploma rv" type="button" data-confetti>
+        <span class="seal">MENTION<br>BIEN</span>
+        <span class="lab">Obtenu · juillet 2026</span>
+        <h3>Bac CIEL</h3>
+        <p>Cybersécurité, informatique et réseaux électroniques.<br>Lycée polyvalent La Briquerie.</p>
+        <span class="hint">Clique pour fêter ça</span>
+      </button>
+      <button class="sticker diploma rv" style="--d:1" type="button" data-confetti>
+        <span class="seal" style="background:var(--pink)">EN<br>COURS</span>
+        <span class="lab">Préparé · 2026 → 2028</span>
+        <h3>BTS SIO SLAM</h3>
+        <p>Services informatiques aux organisations, option Solutions Logicielles et Applications Métiers.<br>Lycée Robert Schuman, Metz.</p>
+        <span class="hint">Clique pour encourager</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact" data-lvl="7" data-name="Contact">
+  <div class="wrap">
+    <p class="tag rv">Niveau final</p>
+    <h2 class="rv">On discute ?</h2>
+    <p class="rv" style="max-width:56ch;margin-bottom:22px">Stage, alternance ou simple question, écris-moi. Je réponds avec plaisir.</p>
+    <span class="big-mail rv" id="mail">axellefebvre.pro57100@gmail.com</span>
+    <p class="copied" id="copied" aria-live="polite"></p>
+    <div class="links rv">
+      <button class="btn ghost" type="button" id="copy">Copier l'adresse</button>
+      <a class="btn primary" href="https://www.linkedin.com/in/axel-lefebvre-088089422/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn ghost" href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">Axel Lefebvre · BTS SIO SLAM · Metz · 2026</div>
+</footer>
+<script src="script.js" defer></script>
+</body>
+</html>
