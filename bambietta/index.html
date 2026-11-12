@@ -21,3 +21,6 @@ if(!reduce.matches){const cols=8,rows=12;for(let y=0;y<rows;y++)for(let x=0;x<co
 setTimeout(()=>{gone=false;clicks=[];plush.disabled=false;plush.style.visibility='visible';sound('pop');if(!reduce.matches)anim=plush.animate([{transform:'scale(0)'},{transform:'scale(1.2,.85)',offset:.55},{transform:'scale(.95,1.07)',offset:.78},{transform:'scale(1)'}],{duration:440,easing:'ease-out'});},RESPAWN_MS)}
 plush.addEventListener('click',()=>{if(gone)return;const now=performance.now();clicks=clicks.filter(t=>now-t<WINDOW_MS);clicks.push(now);if(clicks.length>=LIMIT)explode();else{sound('squeak');squash()}});
 </script></body></html>
+
+
+## The peakest website made my CeBonVieuxAxel, omg (I spent 100000 years cooking this stuff, pls donate me 5 robux)
