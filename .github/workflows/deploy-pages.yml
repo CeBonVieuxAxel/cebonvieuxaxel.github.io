@@ -1,0 +1,46 @@
+name: Publier le site et detecter les peluches
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/configure-pages@v5
+      - name: Preparer le site et les listes
+        run: |
+          mkdir -p _site
+          rsync -a --exclude='.git/' --exclude='.github/' --exclude='_site/' --exclude='node_modules/' --exclude='.venv/' ./ _site/
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+          for folder in Path('_site').rglob('peluches'):
+              if not folder.is_dir() or folder.parent.name != 'assets':
+                  continue
+              site = folder.parent.parent
+              images = sorted((p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in {'.png', '.webp', '.jpg', '.jpeg', '.avif'}), key=lambda p: (p.stem != 'Bambietta Basterbine', p.name.casefold()))
+              paths = [p.relative_to(site).as_posix() for p in images]
+              (site / 'peluches.json').write_text(json.dumps(paths, ensure_ascii=False, indent=2), encoding='utf-8')
+              print(f'{site}: {len(paths)} peluches')
+          PY
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
