@@ -1,26 +1,35 @@
 <!doctype html>
-<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000"><title>Bambietta Basterbine Plushie</title>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000"><title>Peluches — Pouic</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden}body{display:grid;place-items:center;min-height:100svh}button{appearance:none;border:0;padding:0;background:none;width:min(290px,65vw,48svh);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;transform-origin:50% 85%}button:focus-visible{outline:2px solid #c6b7e7;outline-offset:16px;border-radius:24px}button img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none}button:disabled{cursor:default}canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#000;overflow:hidden}body{display:grid;place-items:center;min-height:100svh;font-family:system-ui,sans-serif}#plush{appearance:none;border:0;padding:0;background:none;width:min(290px,65vw,48svh);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none;transform-origin:50% 85%}#plush:focus-visible{outline:2px solid #c6b7e7;outline-offset:16px;border-radius:24px}#plush img{display:block;width:100%;height:auto;max-height:65svh;object-fit:contain;pointer-events:none;-webkit-user-drag:none}#plush:disabled{cursor:default}canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}.picker{position:fixed;z-index:2;top:max(16px,env(safe-area-inset-top));right:max(16px,env(safe-area-inset-right));max-width:calc(100vw - 32px)}select{font:inherit;font-size:16px;color:#eee;background:#161616;border:1px solid #444;border-radius:10px;padding:10px 12px;max-width:100%;color-scheme:dark}select:focus-visible{outline:2px solid #c6b7e7;outline-offset:3px}#status{position:fixed;bottom:20px;left:20px;right:20px;text-align:center;color:#ddd;font-size:14px}#status:empty{display:none}
 </style></head><body>
-<button id="plush" aria-label="Squeak"><img src="assets/peluche.png" alt="Bambietta Basterbine" width="166" height="269" draggable="false"></button><canvas id="fx" aria-hidden="true"></canvas>
+<div class="picker"><select id="picker" aria-label="Choisir une peluche">
+  <option value="assets/peluches/Bambietta Basterbine.png">
+    Bambietta Basterbine
+  </option>
+</select></div>
+<button id="plush" aria-label="Presser Bambietta Basterbine pour faire pouic"><img src="assets/peluches/Bambietta%20Basterbine.png" alt="Bambietta Basterbine" draggable="false"></button><canvas id="fx" aria-hidden="true"></canvas><p id="status" role="status"></p>
 <script>
 const LIMIT=8, WINDOW_MS=2000, RESPAWN_MS=5000;
-const plush=document.querySelector('#plush'),img=plush.querySelector('img'),canvas=document.querySelector('#fx'),ctx=canvas.getContext('2d');
+const DEFAULT='assets/peluches/Bambietta Basterbine.png';
+const plush=document.querySelector('#plush'),img=plush.querySelector('img'),picker=document.querySelector('#picker'),status=document.querySelector('#status'),canvas=document.querySelector('#fx'),ctx=canvas.getContext('2d');
 const reduce=matchMedia('(prefers-reduced-motion: reduce)');
 const pools=Object.fromEntries(['squeak','boom','pop'].map(name=>[name,Array.from({length:name==='squeak'?8:2},()=>{const a=new Audio('assets/'+name+'.wav');a.preload='auto';a.volume=name==='boom'?.55:.7;return a})]));
 const indices={squeak:0,boom:0,pop:0};
 function sound(name){const pool=pools[name],a=pool[indices[name]++%pool.length];a.currentTime=0;a.play().catch(()=>{});}
-let clicks=[],gone=false,anim,particles=[],frame=0,previous=0;
+let clicks=[],gone=false,anim,particles=[],frame=0,previous=0,returnTimer=null,current=DEFAULT,loadVersion=0;
 function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*d;canvas.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0)}
 addEventListener('resize',resize);resize();
 function squash(){anim?.cancel();if(reduce.matches)return;let r=(Math.random()-.5)*12;anim=plush.animate([{transform:'scale(1)'},{transform:`translateY(8px) scale(1.17,.77) rotate(${r}deg)`,offset:.18},{transform:`translateY(-12px) scale(.91,1.12) rotate(${-r/2}deg)`,offset:.44},{transform:'scale(1.04,.96)',offset:.7},{transform:'scale(1)'}],{duration:420,easing:'ease-in-out'})}
 function draw(now){let dt=Math.min((now-previous)/1000,.033);previous=now;ctx.clearRect(0,0,innerWidth,innerHeight);particles=particles.filter(p=>p.life>0);for(const p of particles){p.life-=dt;p.vy+=1000*dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.angle+=p.spin*dt;ctx.save();ctx.globalAlpha=Math.max(0,Math.min(1,p.life/.55));ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.drawImage(img,p.sx,p.sy,p.sw,p.sh,-p.w/2,-p.h/2,p.w,p.h);ctx.restore()}if(particles.length)frame=requestAnimationFrame(draw);else{ctx.clearRect(0,0,innerWidth,innerHeight);frame=0}}
-function explode(){gone=true;clicks=[];anim?.cancel();const r=plush.getBoundingClientRect();plush.disabled=true;plush.style.visibility='hidden';sound('boom');
+function reset(){clearTimeout(returnTimer);returnTimer=null;anim?.cancel();if(frame)cancelAnimationFrame(frame);frame=0;particles=[];ctx.clearRect(0,0,innerWidth,innerHeight);clicks=[];gone=false;plush.disabled=false;plush.style.visibility='visible'}
+function explode(){gone=true;clicks=[];anim?.cancel();const r=img.getBoundingClientRect();plush.disabled=true;plush.style.visibility='hidden';sound('boom');
 if(!reduce.matches){const cols=8,rows=12;for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const dx=(x+.5)/cols-.5,dy=(y+.5)/rows-.5;particles.push({sx:x*img.naturalWidth/cols,sy:y*img.naturalHeight/rows,sw:img.naturalWidth/cols,sh:img.naturalHeight/rows,w:r.width/cols+.6,h:r.height/rows+.6,x:r.left+(x+.5)*r.width/cols,y:r.top+(y+.5)*r.height/rows,vx:dx*1050+(Math.random()-.5)*310,vy:dy*900-350-Math.random()*220,angle:0,spin:(Math.random()-.5)*16,life:1.1+Math.random()*.6})}if(!frame){previous=performance.now();frame=requestAnimationFrame(draw)}}
-setTimeout(()=>{gone=false;clicks=[];plush.disabled=false;plush.style.visibility='visible';sound('pop');if(!reduce.matches)anim=plush.animate([{transform:'scale(0)'},{transform:'scale(1.2,.85)',offset:.55},{transform:'scale(.95,1.07)',offset:.78},{transform:'scale(1)'}],{duration:440,easing:'ease-out'});},RESPAWN_MS)}
-plush.addEventListener('click',()=>{if(gone)return;const now=performance.now();clicks=clicks.filter(t=>now-t<WINDOW_MS);clicks.push(now);if(clicks.length>=LIMIT)explode();else{sound('squeak');squash()}});
+returnTimer=setTimeout(()=>{returnTimer=null;gone=false;clicks=[];plush.disabled=false;plush.style.visibility='visible';sound('pop');if(!reduce.matches)anim=plush.animate([{transform:'scale(0)'},{transform:'scale(1.2,.85)',offset:.55},{transform:'scale(.95,1.07)',offset:.78},{transform:'scale(1)'}],{duration:440,easing:'ease-out'});},RESPAWN_MS)}
+plush.addEventListener('click',()=>{if(gone||!img.complete||!img.naturalWidth)return;const now=performance.now();clicks=clicks.filter(t=>now-t<WINDOW_MS);clicks.push(now);if(clicks.length>=LIMIT)explode();else{sound('squeak');squash()}});
+function label(path){return path.split('/').pop().replace(/\.[^.]+$/,'')}
+function imageURL(path){return path.split('/').map(encodeURIComponent).join('/')}
+async function change(path){const version=++loadVersion;status.textContent='';const next=new Image();next.src=imageURL(path);try{await next.decode();if(version!==loadVersion)return;reset();img.src=next.src;img.alt=label(path);plush.setAttribute('aria-label','Presser '+label(path)+' pour faire pouic');current=path;}catch(e){if(version!==loadVersion)return;picker.value=current;status.textContent='Image introuvable : '+path;}}
+picker.addEventListener('change',()=>change(picker.value));
+(async()=>{try{const response=await fetch('peluches.json',{cache:'no-store'});if(!response.ok)throw Error();const list=await response.json();if(!Array.isArray(list)||!list.length||!list.every(p=>typeof p==='string'&&p.startsWith('assets/peluches/')&&!p.includes('..')&&/\.(png|webp|jpe?g|avif)$/i.test(p)))throw Error();const paths=[...new Set([DEFAULT,...list])];picker.replaceChildren(...paths.map(path=>{const o=document.createElement('option');o.value=path;o.textContent=label(path);return o}));picker.value=DEFAULT;picker.disabled=false;}catch(e){status.textContent='Impossible de charger peluches.json. La peluche de base reste disponible.';}})();
 </script></body></html>
-
-
-## The peakest website made my CeBonVieuxAxel, omg (I spent 100000 years cooking this stuff, pls donate me 5 robux)
