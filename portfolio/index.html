@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta name="google-site-verification" content="IRC8IaYHszolCxzxvAde-YxPKu9r69QRTrqDf7uNf_o" />>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Portfolio Axel Lefebvre</title>
@@ -10,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
-<link rel="stylesheet" href="../style.css">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="hud">
@@ -18,6 +17,7 @@
     <a class="logo" href="#top" aria-label="Retour en haut">AL</a>
     <span class="lvl" id="lvl">NIV 1 · Accueil</span>
     <div class="xp" aria-hidden="true"><i id="xp"></i></div>
+    <button class="theme" type="button" data-cv aria-haspopup="dialog">CV</button>
     <button class="theme" id="theme" type="button" aria-label="Changer de thème">Thème</button>
   </div>
 </header>
@@ -34,6 +34,7 @@
     <p class="typing rv" style="--d:3" aria-live="off">&gt; je fais du <b id="typed">développement web</b><span class="caret"></span></p>
     <div class="cta rv" style="--d:4">
       <a class="btn primary" href="#projets">Voir mes projets</a>
+      <button class="btn ghost" type="button" data-cv aria-haspopup="dialog">Voir mon CV</button>
       <a class="btn ghost" href="https://www.linkedin.com/in/axel-lefebvre-088089422/" target="_blank" rel="noopener">Mon LinkedIn</a>
     </div>
   </div>
@@ -124,7 +125,7 @@
         <h3>Undercover</h3>
         <p>Une messagerie privée, chiffrée et décentralisée pensée pour les entreprises, que je conçois et développe seul. Pas de numéro ni d'e-mail : chaque appareil génère ses propres clés. Les messages passent en pair à pair, ou par un relais chiffré si le destinataire est hors ligne. Projet en cours de développement.</p>
         <div><span class="badge">Chiffrement E2E</span><span class="badge m">Pair à pair</span><span class="badge p">Signal Protocol</span><span class="badge">WebRTC</span></div>
-        <a class="link" href="https://cebonvieuxaxel.github.io/undercover/" target="_blank" rel="noopener">Découvrir Undercover ↗</a>
+        <a class="link" href="https://undercoverapp.axellefebvre-pro57000.workers.dev/" target="_blank" rel="noopener">Découvrir Undercover ↗</a>
       </article>
       <article class="sticker card rv" style="--d:1">
         <div class="top b"><span class="big">GitHub</span></div>
@@ -175,6 +176,7 @@
     <span class="big-mail rv" id="mail">axellefebvre.pro57000@gmail.com</span>
     <p class="copied" id="copied" aria-live="polite"></p>
     <div class="links rv">
+      <button class="btn primary" type="button" data-cv aria-haspopup="dialog">Voir mon CV</button>
       <button class="btn ghost" type="button" id="copy">Copier l'adresse</button>
       <a class="btn primary" href="https://www.linkedin.com/in/axel-lefebvre-088089422/" target="_blank" rel="noopener">LinkedIn ↗</a>
       <a class="btn ghost" href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener">GitHub ↗</a>
@@ -186,6 +188,17 @@
 <footer>
   <div class="wrap">Axel Lefebvre · BTS SIO SLAM · Metz · 2026</div>
 </footer>
-<script src="../script.js" defer></script>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-labelledby="viewer-title" hidden>
+  <div class="viewer-bar">
+    <span class="viewer-title" id="viewer-title">CV · Axel Lefebvre</span>
+    <a class="btn ghost" href="CV_Axel_Lefebvre.pdf" download>Télécharger le PDF</a>
+    <button class="btn primary" type="button" id="viewer-close">Fermer ✕</button>
+  </div>
+  <div class="viewer-body" id="viewer-body">
+    <img class="sheet" src="cv.png" width="1654" height="2339" alt="CV d'Axel Lefebvre, étudiant en BTS SIO option SLAM à Metz, en recherche de stage du 17 mai au 26 juin 2027. Profil, expérience de stagiaire support informatique à la clinique Ambroise Paré, formation, compétences et projets. Le PDF contient le texte complet.">
+  </div>
+</div>
+<script src="script.js" defer></script>
 </body>
 </html>
