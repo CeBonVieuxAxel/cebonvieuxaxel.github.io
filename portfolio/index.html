@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Portfolio Axel Lefebvre</title>
 <meta name="description" content="Portfolio d'Axel Lefebvre, étudiant en BTS SIO option SLAM à Metz : parcours, compétences, projets et diplômes.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FFD43B'/%3E%3Ctext x='32' y='43' font-size='30' font-weight='800' text-anchor='middle' font-family='Arial' fill='%23100C1D'%3EAL%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FFD23F'/%3E%3Ctext x='32' y='43' font-size='30' font-weight='800' text-anchor='middle' font-family='Arial' fill='%2314123A'%3EAL%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<!-- Scène WebGL 3D en arrière-plan -->
-<canvas id="scene3d" aria-hidden="true"></canvas>
-
 <header class="hud">
   <div class="hud-in">
     <a class="logo" href="#top" aria-label="Retour en haut">AL</a>
     <span class="lvl" id="lvl">NIV 1 · Accueil</span>
     <div class="xp" aria-hidden="true"><i id="xp"></i></div>
     <button class="theme" type="button" data-cv aria-haspopup="dialog">CV</button>
-    <button class="theme" id="theme" type="button" aria-label="Changer de thème">Thème rose</button>
+    <button class="theme" id="theme" type="button" aria-label="Changer de thème">Thème</button>
   </div>
 </header>
 
 <main id="top">
 <section class="hero" data-lvl="1" data-name="Accueil">
   <div class="wrap hero-in">
+    <div class="shape s1" data-speed="0.18"></div>
+    <div class="shape s2" data-speed="-0.12"></div>
+    <div class="shape s3" data-speed="0.25"></div>
     <p class="tag rv">Portfolio · Metz, Grand Est</p>
     <h1 class="rv" style="--d:1">Salut, moi c'est <span class="hl">Axel</span> Lefebvre.</h1>
     <p class="hero-sub rv" style="--d:2">Étudiant en BTS Services informatiques aux organisations, option SLAM. J'aime construire des applications web, sécuriser des réseaux et faire tourner des modèles d'IA en local.</p>
@@ -125,7 +125,7 @@
         <h3>Undercover</h3>
         <p>Une messagerie privée, chiffrée et décentralisée pensée pour les entreprises, que je conçois et développe seul. Pas de numéro ni d'e-mail : chaque appareil génère ses propres clés. Les messages passent en pair à pair, ou par un relais chiffré si le destinataire est hors ligne. Projet en cours de développement.</p>
         <div><span class="badge">Chiffrement E2E</span><span class="badge m">Pair à pair</span><span class="badge p">Signal Protocol</span><span class="badge">WebRTC</span></div>
-        <a class="link" href="https://cebonvieuxaxel.github.io/undercover" target="_blank" rel="noopener">Découvrir Undercover ↗</a>
+        <a class="link" href="cebonvieuxaxel.github.io/undercover" target="_blank" rel="noopener">Découvrir Undercover ↗</a>
       </article>
       <article class="sticker card rv" style="--d:1">
         <div class="top b"><span class="big">GitHub</span></div>
@@ -199,14 +199,6 @@
     <img class="sheet" src="cv.png" width="1654" height="2339" alt="CV d'Axel Lefebvre, étudiant en BTS SIO option SLAM à Metz, en recherche de stage du 17 mai au 26 juin 2027. Profil, expérience de stagiaire support informatique à la clinique Ambroise Paré, formation, compétences et projets. Le PDF contient le texte complet.">
   </div>
 </div>
-
-<script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.169.0/build/three.module.js"
-    }
-  }
-</script>
-<script type="module" src="script.js"></script>
+<script src="script.js" defer></script>
 </body>
 </html>
