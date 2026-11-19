@@ -37,7 +37,9 @@
       --surface-glass-hover: rgba(255, 255, 255, 0.065);
       --border-subtle: rgba(255, 255, 255, 0.09);
       --border-strong: rgba(255, 255, 255, 0.18);
+      --accent-color: #FFFFFF;
       --accent-glow: rgba(255, 255, 255, 0.14);
+      --accent-rgb: 255, 255, 255;
       --preview-bg: #08080A;
       --preview-sidebar: #0B0B0D;
       --preview-accent: #FFFFFF;
@@ -58,6 +60,7 @@
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow-x: hidden;
       margin: 0;
+      transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     /* Canvases de fond : lignes topographiques + scène 3D Three.js */
@@ -85,10 +88,11 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(circle at 68% 46%, rgba(255, 255, 255, 0.065) 0%, rgba(255, 255, 255, 0.015) 36%, transparent 68%),
-        radial-gradient(circle at 18% 25%, rgba(255, 255, 255, 0.035) 0%, transparent 50%);
+        radial-gradient(circle at 68% 46%, rgba(var(--accent-rgb), 0.11) 0%, rgba(var(--accent-rgb), 0.025) 36%, transparent 68%),
+        radial-gradient(circle at 18% 25%, rgba(var(--accent-rgb), 0.05) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
+      transition: background 0.5s ease;
     }
 
     /* Surfaces Glassmorphism */
@@ -241,29 +245,33 @@
   <!-- Barre de navigation supérieure minimaliste -->
   <header class="fixed top-0 left-0 right-0 z-40 px-4 sm:px-8 py-4 pointer-events-none">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <!-- Badge version gauche (fidèle au header image) -->
+      <!-- Logo & Nom -->
       <div class="flex items-center gap-3 pointer-events-auto">
-        <a href="#" class="glass-pill px-3.5 py-1.5 rounded-full flex items-center gap-2.5 text-xs font-mono text-zinc-300 hover:text-white hover:border-white/25 transition-all">
-          <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-          <span>v1.0.0-beta</span>
+        <a href="#" class="glass-pill px-3.5 py-1.5 rounded-full flex items-center gap-2.5 text-xs font-medium text-white hover:border-white/25 transition-all">
+          <svg class="w-4 h-4 text-white" viewBox="0 0 36 36" fill="none">
+            <circle cx="18" cy="18" r="14" stroke="currentColor" stroke-width="2.2" stroke-opacity="0.85"/>
+            <line x1="11.5" y1="21.5" x2="24.5" y2="14.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            <circle cx="11.5" cy="21.5" r="3.4" fill="currentColor"/>
+            <circle cx="24.5" cy="14.5" r="3.4" fill="currentColor"/>
+          </svg>
+          <span class="tracking-widest font-semibold">AZOT</span>
         </a>
       </div>
 
       <!-- Navigation centrale verre fumé -->
       <nav class="hidden md:flex items-center gap-1 glass-pill px-2 py-1.5 rounded-full pointer-events-auto">
-        <a href="#experience" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Interface</a>
-        <a href="#themes" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Theme Studio</a>
-        <a href="#securite" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Azot Shield</a>
+        <a href="#experience" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Aperçu</a>
+        <a href="#themes" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Thèmes</a>
         <a href="#telecharger" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Installer</a>
+        <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">GitHub</a>
       </nav>
 
       <!-- Actions droites -->
       <div class="flex items-center gap-2.5 pointer-events-auto">
-        <button onclick="openCommandPalette()" class="glass-pill px-3 py-1.5 rounded-full text-xs text-zinc-400 hover:text-white hidden sm:flex items-center gap-2 transition-all hover:border-white/25" title="Tester la palette de commande">
-          <span>Palette</span>
-          <kbd class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-zinc-300">⌘L</kbd>
+        <button onclick="openCommandPalette()" class="glass-pill px-3 py-1.5 rounded-full text-xs text-zinc-400 hover:text-white hidden sm:flex items-center gap-2 transition-all hover:border-white/25" title="Palette de commande">
+          <kbd class="font-mono text-[10px] text-zinc-300">⌘L</kbd>
         </button>
-        <a href="#telecharger" class="px-4 py-1.5 rounded-full text-xs font-medium bg-white text-black hover:bg-zinc-200 transition-all shadow-[0_0_25px_rgba(255,255,255,0.22)]">
+        <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" id="nav-download-btn" class="px-4 py-1.5 rounded-full text-xs font-medium text-black transition-all" style="background-color: var(--accent-color); box-shadow: 0 0 25px rgba(var(--accent-rgb), 0.28);">
           Télécharger
         </a>
       </div>
@@ -273,20 +281,18 @@
   <!-- CONTENU PRINCIPAL -->
   <main class="relative z-10">
 
-    <!-- SECTION HERO : Identique à la composition visuelle de l'image -->
+    <!-- SECTION HERO -->
     <section class="min-h-screen flex flex-col justify-center pt-24 pb-16 px-4 sm:px-8 max-w-7xl mx-auto">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-6 items-center">
 
-        <!-- Colonne Gauche : Typographie monumentale AZOT & Accroche -->
+        <!-- Colonne Gauche : Titre & Accroche -->
         <div class="lg:col-span-5 flex flex-col items-start text-left space-y-6 z-20">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.03] text-[11px] font-mono tracking-wider text-zinc-400 uppercase">
-            <span>Zero Bloat</span>
-            <span class="text-white/25">•</span>
-            <span>120 FPS UI</span>
-          </div>
+          <span class="glass-pill px-3 py-1 rounded-full text-[11px] font-mono text-zinc-400">
+            v1.0.0-beta
+          </span>
 
-          <div class="space-y-3">
-            <h1 class="text-6xl sm:text-7xl xl:text-8xl font-semibold tracking-[0.26em] text-white leading-none select-none drop-shadow-[0_0_35px_rgba(255,255,255,0.12)]">
+          <div class="space-y-2.5">
+            <h1 class="text-6xl sm:text-7xl xl:text-8xl font-semibold tracking-[0.26em] text-white leading-none select-none transition-all duration-500" style="text-shadow: 0 0 38px rgba(var(--accent-rgb), 0.25);">
               AZOT
             </h1>
             <p class="text-xl sm:text-2xl font-light text-zinc-300 tracking-wide pt-1">
@@ -294,31 +300,22 @@
             </p>
           </div>
 
-          <p class="text-sm sm:text-base text-zinc-400 leading-relaxed max-w-md font-light">
-            Un navigateur desktop minimaliste en verre fumé. Architecture verticale fluide, bloqueur de publicités natif, protection anti-phishing et thèmes personnalisables en temps réel.
-          </p>
-
           <!-- Boutons CTA principaux -->
           <div class="flex flex-wrap items-center gap-3.5 pt-2">
-            <a href="#telecharger" id="hero-download-btn" class="group relative inline-flex items-center gap-3 px-6 py-3.5 rounded-full bg-white text-black font-medium text-sm hover:bg-zinc-200 transition-all shadow-[0_0_40px_rgba(255,255,255,0.2)]">
+            <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" id="hero-download-btn" class="group relative inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full text-black font-medium text-sm transition-all" style="background-color: var(--accent-color); box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.28);">
               <svg class="w-4 h-4 transition-transform group-hover:translate-y-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
-              <span id="os-download-label">Télécharger Azot</span>
-              <span class="text-xs font-mono text-zinc-600">v1.0.0-beta</span>
+              <span id="os-download-label">Télécharger (Windows)</span>
             </a>
 
             <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 px-5 py-3.5 rounded-full glass-pill text-sm text-zinc-300 hover:text-white hover:border-white/25 transition-all">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
               </svg>
-              <span>CeBonVieuxAxel/Azot-Browser</span>
+              <span>GitHub</span>
             </a>
           </div>
-
-          <p class="text-[11px] font-mono text-zinc-500 flex items-center gap-2">
-            <span>Déplacez votre curseur pour repousser les atomes 3D</span>
-          </p>
         </div>
 
         <!-- Colonne Droite : Fenêtre du navigateur Azot en perspective 3D interactive -->
@@ -381,7 +378,7 @@
 
                   <div class="flex items-center gap-1 sidebar-label">
                     <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/[0.05] text-[10px] font-mono text-zinc-300" title="Azot Shield actif">
-                      <svg class="w-3 h-3 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                      <svg class="w-3 h-3 transition-colors" style="color: var(--preview-accent);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
                       <span id="mock-shield-count">2</span>
                     </span>
                     <span class="p-1 text-zinc-400" title="Azot Guard actif">
@@ -393,12 +390,12 @@
                 <!-- Liste interactive des onglets avec pilule glissante -->
                 <div class="relative space-y-1 pt-1" id="mock-tabs-container">
                   <!-- Pilule glissante -->
-                  <div id="mock-active-pill" class="tab-pill-indicator absolute left-0 right-0 h-8 rounded-lg bg-white/[0.07] border border-white/[0.12] pointer-events-none" style="transform: translateY(4px);"></div>
+                  <div id="mock-active-pill" class="tab-pill-indicator absolute left-0 right-0 h-8 rounded-lg pointer-events-none" style="transform: translateY(4px); background-color: rgba(var(--accent-rgb), 0.14); border: 1px solid rgba(var(--accent-rgb), 0.32);"></div>
 
                   <div id="mock-tab-list" class="relative z-10 space-y-1">
                     <button onclick="selectMockTab(0, 'Nouvel onglet')" class="mock-tab w-full h-8 px-2.5 rounded-lg flex items-center justify-between text-xs text-white font-medium transition-colors">
                       <span class="flex items-center gap-2 truncate">
-                        <span class="w-1.5 h-1.5 rounded-full bg-white shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0 transition-colors" style="background-color: var(--preview-accent);"></span>
                         <span class="truncate sidebar-label">Nouvel onglet</span>
                       </span>
                     </button>
@@ -433,12 +430,12 @@
             </aside>
 
             <!-- Viewport interne du Mockup Azot (Nouvel Onglet) -->
-            <div class="relative flex-1 flex flex-col items-center justify-center p-6 overflow-hidden" style="background: radial-gradient(circle at 50% 42%, rgba(255,255,255,0.06) 0%, transparent 65%);">
+            <div id="mock-viewport" class="relative flex-1 flex flex-col items-center justify-center p-6 overflow-hidden transition-all duration-500" style="background: radial-gradient(circle at 50% 42%, rgba(var(--accent-rgb), 0.12) 0%, transparent 65%);">
               <!-- Mini canvas d'atomes 3D dans l'écran du navigateur -->
               <canvas id="mock-inner-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
 
               <!-- Barre de progression de chargement -->
-              <div id="mock-progress-bar" class="absolute top-0 left-0 h-[2px] bg-white w-0 transition-all duration-300 opacity-0"></div>
+              <div id="mock-progress-bar" class="absolute top-0 left-0 h-[2px] w-0 transition-all duration-300 opacity-0" style="background-color: var(--preview-accent);"></div>
 
               <!-- Notification Toast interne -->
               <div id="mock-toast" class="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] font-mono text-white opacity-0 transition-opacity duration-200 pointer-events-none">
@@ -449,8 +446,8 @@
               <div class="relative z-10 flex flex-col items-center text-center w-full max-w-sm space-y-4">
                 <!-- Logo atomique rotatif -->
                 <div class="relative flex items-center justify-center">
-                  <div class="absolute w-16 h-16 rounded-full bg-white/10 blur-xl"></div>
-                  <svg class="w-12 h-12 sm:w-14 sm:h-14 text-white azot-atom-spin cursor-pointer" viewBox="0 0 48 48" fill="none">
+                  <div class="absolute w-16 h-16 rounded-full blur-xl transition-colors duration-500" style="background-color: rgba(var(--accent-rgb), 0.25);"></div>
+                  <svg class="w-12 h-12 sm:w-14 sm:h-14 azot-atom-spin cursor-pointer transition-colors duration-500" style="color: var(--preview-accent);" viewBox="0 0 48 48" fill="none">
                     <circle cx="24" cy="24" r="18" stroke="currentColor" stroke-width="2.4" stroke-opacity="0.9"/>
                     <line x1="15.5" y1="28.5" x2="32.5" y2="19.5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                     <circle cx="15.5" cy="28.5" r="4.5" fill="currentColor"/>
@@ -459,7 +456,7 @@
                 </div>
 
                 <div class="space-y-1">
-                  <div class="text-2xl sm:text-3xl font-semibold tracking-[0.28em] text-white" style="color: var(--preview-accent);">
+                  <div class="text-2xl sm:text-3xl font-semibold tracking-[0.28em] transition-colors duration-500" style="color: var(--preview-accent);">
                     AZOT
                   </div>
                   <p class="text-[11px] sm:text-xs text-zinc-400 font-light">
@@ -563,214 +560,215 @@
       </div>
     </section>
 
-    <!-- SECTION THEME STUDIO INTERACTIF -->
-    <section id="themes" class="py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-      <div class="glass-card rounded-3xl p-8 sm:p-12">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          <div class="lg:col-span-5 space-y-5">
-            <span class="text-xs font-mono uppercase tracking-widest text-zinc-500">Theme Studio</span>
-            <h2 class="text-3xl font-semibold text-white tracking-tight">
-              Votre verre dépoli, vos règles.
-            </h2>
-            <p class="text-sm text-zinc-400 font-light leading-relaxed">
-              Ajustez l'opacité, l'intensité du flou, les arrondis et les accents lumineux en direct. Exportez vos créations au format <code class="font-mono text-xs text-zinc-300">.azot-theme.json</code>.
-            </p>
+    <!-- SECTION FONCTIONNALITÉS (Ultra-concise) -->
+    <section id="experience" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="3" x2="9" y2="21"/>
+            </svg>
+            <h3 class="text-sm font-medium">Sidebar verticale</h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Onglets glissants escamotables (<code class="font-mono text-zinc-300">⌘S</code>).</p>
+        </div>
 
-            <!-- Sélecteur de presets en direct -->
-            <div class="grid grid-cols-2 gap-3 pt-2">
-              <button onclick="applyThemePreset('noir')" class="theme-preset-btn active text-left p-3.5 rounded-xl bg-white/[0.08] border border-white/25 transition-all" data-preset="noir">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="w-3.5 h-3.5 rounded-full bg-[#09090B] border border-white/40"></span>
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <h3 class="text-sm font-medium">Palette <kbd class="font-mono text-[11px] text-zinc-300">Ctrl+L</kbd></h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Navigation et recherche flottante instantanée.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+            </svg>
+            <h3 class="text-sm font-medium">Azot Shield</h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Bloqueur natif de publicités et trackers.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <h3 class="text-sm font-medium">Azot Guard</h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Détection en temps réel des sites malveillants.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+            </svg>
+            <h3 class="text-sm font-medium">Theme Studio</h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Personnalisation complète du verre dépoli.</p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 space-y-2.5">
+          <div class="flex items-center gap-3 text-white">
+            <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+            </svg>
+            <h3 class="text-sm font-medium">Extensions MV3</h3>
+          </div>
+          <p class="text-xs text-zinc-400 font-light">Chargement direct d'extensions Chromium.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION THEME STUDIO INTERACTIF -->
+    <section id="themes" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto">
+      <div class="glass-card rounded-3xl p-6 sm:p-10">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div class="space-y-1.5">
+            <h2 class="text-xl sm:text-2xl font-semibold text-white tracking-tight">Theme Studio</h2>
+            <p class="text-xs font-mono text-zinc-400" id="theme-json-name">azot-noir.azot-theme.json</p>
+          </div>
+
+          <!-- Sélecteur direct des thèmes + couleur libre -->
+          <div class="flex flex-wrap sm:flex-nowrap items-stretch gap-3 flex-1 max-w-3xl">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 flex-1">
+              <button type="button" onclick="applyThemePreset('noir')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.08] ring-2 ring-white border border-white/30 transition-all cursor-pointer" data-preset="noir">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-3.5 h-3.5 rounded-full bg-white border border-white/60 shadow-[0_0_10px_rgba(255,255,255,0.6)]"></span>
                   <span class="text-[10px] font-mono text-zinc-400">Défaut</span>
                 </div>
                 <div class="text-xs font-medium text-white">Azot Noir</div>
-                <div class="text-[11px] text-zinc-500">Carbone & Argent</div>
               </button>
 
-              <button onclick="applyThemePreset('oled')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all" data-preset="oled">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="w-3.5 h-3.5 rounded-full bg-black border border-white/30"></span>
-                  <span class="text-[10px] font-mono text-zinc-500">0% Lum.</span>
+              <button type="button" onclick="applyThemePreset('oled')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all cursor-pointer" data-preset="oled">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-3.5 h-3.5 rounded-full bg-zinc-400 border border-white/40"></span>
+                  <span class="text-[10px] font-mono text-zinc-500">#000</span>
                 </div>
                 <div class="text-xs font-medium text-white">OLED Pitch</div>
-                <div class="text-[11px] text-zinc-500">Noir absolu #000</div>
               </button>
 
-              <button onclick="applyThemePreset('smoke')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all" data-preset="smoke">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="w-3.5 h-3.5 rounded-full bg-zinc-700 border border-white/40"></span>
-                  <span class="text-[10px] font-mono text-zinc-500">Blur 32px</span>
+              <button type="button" onclick="applyThemePreset('smoke')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all cursor-pointer" data-preset="smoke">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-3.5 h-3.5 rounded-full bg-sky-300 border border-white/40"></span>
+                  <span class="text-[10px] font-mono text-zinc-500">Glace</span>
                 </div>
-                <div class="text-xs font-medium text-white">Silver Smoke</div>
-                <div class="text-[11px] text-zinc-500">Verre fumé clair</div>
+                <div class="text-xs font-medium text-white">Silver Ice</div>
               </button>
 
-              <button onclick="applyThemePreset('emerald')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all" data-preset="emerald">
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="w-3.5 h-3.5 rounded-full bg-emerald-400/80 border border-white/30"></span>
-                  <span class="text-[10px] font-mono text-zinc-500">Accent</span>
+              <button type="button" onclick="applyThemePreset('emerald')" class="theme-preset-btn text-left p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/25 transition-all cursor-pointer" data-preset="emerald">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="w-3.5 h-3.5 rounded-full bg-emerald-400 border border-white/40"></span>
+                  <span class="text-[10px] font-mono text-zinc-500">Mint</span>
                 </div>
                 <div class="text-xs font-medium text-white">Obsidian Mint</div>
-                <div class="text-[11px] text-zinc-500">Reflet minéral</div>
               </button>
             </div>
+
+            <!-- Sélecteur de couleur personnalisée en direct -->
+            <label for="custom-theme-color" class="theme-preset-btn flex flex-col justify-between p-3.5 rounded-xl bg-white/[0.03] border border-white/10 hover:border-white/30 transition-all cursor-pointer min-w-[92px]" data-preset="custom" title="Choisir une couleur libre">
+              <div class="flex items-center justify-between mb-2">
+                <span id="custom-color-swatch" class="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-violet-400 via-fuchsia-300 to-amber-200 border border-white/50"></span>
+                <span class="text-[10px] font-mono text-zinc-400">Custom</span>
+              </div>
+              <div class="text-xs font-medium text-white">Libre</div>
+              <input id="custom-theme-color" type="color" value="#a78bfa" oninput="applyCustomThemeColor(this.value)" class="sr-only" />
+            </label>
           </div>
-
-          <!-- Panneau d'aperçu Theme Studio -->
-          <div class="lg:col-span-7">
-            <div class="rounded-2xl bg-black/50 border border-white/10 p-6 space-y-5">
-              <div class="flex items-center justify-between border-b border-white/[0.07] pb-4">
-                <div class="flex items-center gap-2.5">
-                  <span class="w-2.5 h-2.5 rounded-full bg-white/80"></span>
-                  <span class="text-xs font-mono text-zinc-300" id="theme-json-name">azot-noir.azot-theme.json</span>
-                </div>
-                <span class="text-[11px] font-mono text-zinc-500">Aperçu synchronisé avec le Hero ↑</span>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.07] space-y-1">
-                  <span class="text-zinc-500 font-mono text-[10px]">--azot-bg</span>
-                  <div class="font-mono text-zinc-200" id="theme-val-bg">#08080A</div>
-                </div>
-                <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.07] space-y-1">
-                  <span class="text-zinc-500 font-mono text-[10px]">--azot-blur</span>
-                  <div class="font-mono text-zinc-200" id="theme-val-blur">28px saturate(140%)</div>
-                </div>
-                <div class="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.07] space-y-1">
-                  <span class="text-zinc-500 font-mono text-[10px]">--azot-accent</span>
-                  <div class="font-mono text-zinc-200" id="theme-val-accent">#FFFFFF</div>
-                </div>
-              </div>
-
-              <p class="text-xs text-zinc-500 font-light">
-                Cliquez sur un thème à gauche pour voir le navigateur Azot en haut de page changer instantanément de peau.
-              </p>
-    <!-- SECTION TÉLÉCHARGEMENT & INSTALLATION -->
-    <section id="telecharger" class="py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-      <div class="text-center max-w-xl mx-auto mb-14 space-y-3">
-        <span class="glass-pill px-3.5 py-1 rounded-full text-xs font-mono text-zinc-300">v1.0.0-beta</span>
-        <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight pt-2">
-          Installez Azot maintenant.
-        </h2>
-        <p class="text-sm text-zinc-400 font-light">
-          Disponible dès maintenant sur Windows. Les versions macOS et Linux sont en cours de préparation.
-        </p>
+        </div>
       </div>
+    </section>
 
-      <!-- Cartes Plateformes -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+    <!-- SECTION TÉLÉCHARGEMENT & INSTALLATION -->
+    <section id="telecharger" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-4xl mx-auto">
         <!-- Windows (Disponible) -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col items-center text-center space-y-5 border-white/20">
-          <div class="w-full flex items-center justify-between">
-            <span class="px-2.5 py-0.5 rounded-full bg-white/10 text-[10px] font-mono text-white">Disponible</span>
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-5 border-white/20">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5 text-white">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5.3L10.2 4.3V11.3H3V5.3ZM3 18.7L10.2 19.7V12.7H3V18.7ZM11.1 4.2L21 2.8V11.3H11.1V4.2ZM11.1 19.8L21 21.2V12.7H11.1V19.8Z"/>
+              </svg>
+              <h3 class="text-sm font-medium">Windows</h3>
+            </div>
             <span class="text-[10px] font-mono text-zinc-400">v1.0.0-beta</span>
           </div>
-          <svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M3 5.3L10.2 4.3V11.3H3V5.3ZM3 18.7L10.2 19.7V12.7H3V18.7ZM11.1 4.2L21 2.8V11.3H11.1V4.2ZM11.1 19.8L21 21.2V12.7H11.1V19.8Z"/>
-          </svg>
-          <div>
-            <h3 class="text-base font-medium text-white">Windows</h3>
-            <p class="text-xs text-zinc-400 font-mono mt-1">Windows 10 / 11 (x64)</p>
-          </div>
-          <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" onclick="triggerInstallerDownload('Azot Windows (GitHub Release)')" class="w-full py-2.5 px-4 rounded-xl bg-white text-black text-xs font-medium hover:bg-zinc-200 transition-all shadow-[0_0_25px_rgba(255,255,255,0.18)]">
-            Télécharger sur GitHub
+          <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" onclick="triggerInstallerDownload('Azot Windows (.exe)')" class="w-full py-2.5 px-4 rounded-xl bg-white text-black text-center text-xs font-medium hover:bg-zinc-200 transition-all shadow-[0_0_25px_rgba(255,255,255,0.18)]">
+            Télécharger (.exe)
           </a>
         </div>
 
         <!-- macOS (Non prête) -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col items-center text-center space-y-5 opacity-75">
-          <div class="w-full flex items-center justify-between">
-            <span class="px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-[10px] font-mono text-zinc-400">Non prête</span>
-            <span class="text-[10px] font-mono text-zinc-500">Bientôt</span>
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-5 opacity-70">
+          <div class="flex items-center justify-between text-zinc-300">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/>
+              </svg>
+              <h3 class="text-sm font-medium">macOS</h3>
+            </div>
           </div>
-          <svg class="w-8 h-8 text-zinc-400" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/>
-          </svg>
-          <div>
-            <h3 class="text-base font-medium text-zinc-300">macOS</h3>
-            <p class="text-xs text-zinc-500 font-mono mt-1">Version en cours de préparation</p>
+          <div class="py-2.5 px-3 rounded-xl bg-white/[0.03] border border-white/10 text-center text-xs font-mono text-zinc-500">
+            Non prête — en préparation
           </div>
-          <button disabled class="w-full py-2.5 px-4 rounded-xl bg-white/[0.03] border border-white/10 text-zinc-500 text-xs font-medium cursor-not-allowed">
-            Indisponible pour le moment
-          </button>
         </div>
 
         <!-- Linux (Non prête) -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col items-center text-center space-y-5 opacity-75">
-          <div class="w-full flex items-center justify-between">
-            <span class="px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-[10px] font-mono text-zinc-400">Non prête</span>
-            <span class="text-[10px] font-mono text-zinc-500">Bientôt</span>
+        <div class="glass-card rounded-2xl p-6 flex flex-col justify-between space-y-5 opacity-70">
+          <div class="flex items-center justify-between text-zinc-300">
+            <div class="flex items-center gap-2.5">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+              </svg>
+              <h3 class="text-sm font-medium">Linux</h3>
+            </div>
           </div>
-          <svg class="w-8 h-8 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
-          </svg>
-          <div>
-            <h3 class="text-base font-medium text-zinc-300">Linux</h3>
-            <p class="text-xs text-zinc-500 font-mono mt-1">Version en cours de préparation</p>
+          <div class="py-2.5 px-3 rounded-xl bg-white/[0.03] border border-white/10 text-center text-xs font-mono text-zinc-500">
+            Non prête — en préparation
           </div>
-          <button disabled class="w-full py-2.5 px-4 rounded-xl bg-white/[0.03] border border-white/10 text-zinc-500 text-xs font-medium cursor-not-allowed">
-            Indisponible pour le moment
-          </button>
         </div>
       </div>
 
-      <!-- Installation rapide via PowerShell (Windows) -->
-      <div class="max-w-4xl mx-auto mt-10 glass-card rounded-2xl p-6 sm:p-7 space-y-5">
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.07] pb-4">
-          <div class="flex items-center gap-2.5">
-            <span class="px-2.5 py-1 rounded-md bg-white/[0.08] font-mono text-[11px] text-white">PowerShell</span>
-            <span class="text-xs font-medium text-zinc-200">Installation & compilation rapide depuis GitHub (Windows)</span>
-          </div>
+      <!-- Installation PowerShell (Windows) -->
+      <div class="max-w-4xl mx-auto mt-6 glass-card rounded-2xl p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono text-zinc-300">PowerShell (Windows)</span>
           <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-zinc-400 hover:text-white transition-colors">
-            github.com/CeBonVieuxAxel/Azot-Browser ↗
+            CeBonVieuxAxel/Azot-Browser ↗
           </a>
         </div>
 
-        <!-- Option 1 : Installation directe de la dernière release via PowerShell -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-            <span>1. Télécharger et lancer directement l'installeur Windows (Release GitHub) :</span>
-          </div>
-          <div class="glass-pill rounded-xl p-3.5 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <code id="ps-release-cmd" class="font-mono text-xs text-zinc-200 overflow-x-auto whitespace-nowrap py-0.5">$r = irm "https://api.github.com/repos/CeBonVieuxAxel/Azot-Browser/releases/latest"; $a = $r.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1; iwr $a.browser_download_url -OutFile "$env:TEMP\$($a.name)"; Start-Process "$env:TEMP\$($a.name)"</code>
-            <button onclick="copyCommand('ps-release-cmd', this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
-              Copier
-            </button>
-          </div>
+        <div class="glass-pill rounded-xl p-3 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <code id="ps-release-cmd" class="font-mono text-xs text-zinc-200 overflow-x-auto whitespace-nowrap py-0.5">$r = irm "https://api.github.com/repos/CeBonVieuxAxel/Azot-Browser/releases/latest"; $a = $r.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1; iwr $a.browser_download_url -OutFile "$env:TEMP\$($a.name)"; Start-Process "$env:TEMP\$($a.name)"</code>
+          <button onclick="copyCommand('ps-release-cmd', this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
+            Copier
+          </button>
         </div>
 
-        <!-- Option 2 : Cloner et compiler depuis les sources -->
-        <div class="space-y-2">
-          <div class="flex items-center justify-between text-[11px] font-mono text-zinc-400">
-            <span>2. Ou cloner le dépôt et compiler l'installeur localement :</span>
-          </div>
-          <div class="glass-pill rounded-xl p-3.5 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-            <code id="ps-clone-cmd" class="font-mono text-xs text-zinc-300 overflow-x-auto whitespace-nowrap py-0.5">git clone https://github.com/CeBonVieuxAxel/Azot-Browser.git; cd Azot-Browser; npm install; npm run dist:win</code>
-            <button onclick="copyCommand('ps-clone-cmd', this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
-              Copier
-            </button>
-          </div>
+        <div class="glass-pill rounded-xl p-3 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <code id="ps-clone-cmd" class="font-mono text-xs text-zinc-400 overflow-x-auto whitespace-nowrap py-0.5">git clone https://github.com/CeBonVieuxAxel/Azot-Browser.git; cd Azot-Browser; npm install; npm run dist:win</code>
+          <button onclick="copyCommand('ps-clone-cmd', this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
+            Copier
+          </button>
         </div>
       </div>
     </section>
   </main>
 
   <!-- FOOTER MINIMALISTE -->
-  <footer class="relative z-10 border-t border-white/[0.07] py-10 px-4 sm:px-8">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3">
-        <span class="glass-pill px-3 py-1 rounded-full text-xs font-mono text-zinc-400">v1.0.0-beta</span>
-        <span class="text-xs text-zinc-400">
-          Créé par <a href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener noreferrer" class="text-white font-medium hover:underline">Axel LEFEBVRE</a>
-        </span>
-        <span class="text-zinc-600">•</span>
-        <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="text-xs font-mono text-zinc-400 hover:text-white transition-colors">
-          github.com/CeBonVieuxAxel/Azot-Browser
-        </a>
+  <footer class="relative z-10 border-t border-white/[0.07] py-8 px-4 sm:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+      <div>
+        Azot — Créé par <a href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener noreferrer" class="text-white font-medium hover:underline">Axel LEFEBVRE</a>
       </div>
-      <div class="glass-pill px-3.5 py-1 rounded-full text-xs font-mono text-zinc-300">
-        Minimalist. Fast. Secure.
-      </div>
+      <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="font-mono hover:text-white transition-colors">
+        https://github.com/CeBonVieuxAxel/Azot-Browser
+      </a>
     </div>
   </footer>
 
@@ -858,6 +856,8 @@
     // =========================================================================
     // 2. SCÈNE 3D THREE.JS : SPHÈRES OBSIDIENNE & VERRE FUMÉ RÉACTIVES AU CURSEUR
     // =========================================================================
+    window.azot3DScene = {};
+
     (function initThreeSpheres() {
       const canvas = document.getElementById('three-canvas');
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -880,7 +880,7 @@
       rimLight.position.set(-10, -6, -8);
       scene.add(rimLight);
 
-      const pointGlow = new THREE.PointLight(0xffffff, 0.9, 30);
+      const pointGlow = new THREE.PointLight(0xffffff, 1.15, 32);
       pointGlow.position.set(2, 1, 6);
       scene.add(pointGlow);
 
@@ -901,15 +901,17 @@
         clearcoatRoughness: 0.12,
       });
 
-      const sphereGeo = new THREE.SphereGeometry(1, 42, 42);
-      const spheres = [];
+      window.azot3DScene = {
+        keyLight,
+        rimLight,
+        pointGlow,
+        matteObsidianMat,
+        smokyGlassMat
+      };
 
-      // Positions inspirées de l'image de référence autour et devant le navigateur
+      const sphereGeo = new THREE.SphereGeometry(1, 32, 32);
+      const spheres = [];
       const sphereConfigs = [
-        { x: -7.5, y: -3.8, z: 3.5, r: 1.55, type: 'matte' },
-        { x: -3.6, y: -1.4, z: 4.2, r: 0.68, type: 'matte' },
-        { x: -4.4, y: 0.8,  z: 2.2, r: 0.32, type: 'glass' },
-        { x: 0.2,  y: 3.6,  z: 1.8, r: 0.82, type: 'matte' },
         { x: -1.3, y: 4.1,  z: 2.6, r: 0.26, type: 'glass' },
         { x: 4.5,  y: 4.2,  z: 1.2, r: 1.15, type: 'glass' },
         { x: 7.4,  y: 2.1,  z: 2.8, r: 0.92, type: 'glass' },
@@ -1032,6 +1034,8 @@
     // =========================================================================
     // 3. ATOMES FLOTTANTS À L'INTÉRIEUR DU MOCKUP DU NAVIGATEUR
     // =========================================================================
+    window.mockAtomColor = '255, 255, 255';
+
     (function initMockInnerCanvas() {
       const canvas = document.getElementById('mock-inner-canvas');
       if (!canvas) return;
@@ -1048,7 +1052,7 @@
           r: 2.5 + Math.random() * 6.5,
           vx: (Math.random() - 0.5) * 0.35,
           vy: (Math.random() - 0.5) * 0.35,
-          alpha: 0.15 + Math.random() * 0.45
+          alpha: 0.18 + Math.random() * 0.45
         }));
       }
       window.addEventListener('resize', resize);
@@ -1066,8 +1070,8 @@
             a.x - a.r * 0.3, a.y - a.r * 0.3, a.r * 0.1,
             a.x, a.y, a.r
           );
-          grad.addColorStop(0, `rgba(255, 255, 255, ${a.alpha})`);
-          grad.addColorStop(0.6, `rgba(90, 90, 98, ${a.alpha * 0.55})`);
+          grad.addColorStop(0, `rgba(${window.mockAtomColor}, ${a.alpha})`);
+          grad.addColorStop(0.6, `rgba(${window.mockAtomColor}, ${a.alpha * 0.35})`);
           grad.addColorStop(1, 'rgba(15, 15, 18, 0)');
 
           ctx.fillStyle = grad;
@@ -1135,7 +1139,7 @@
 
         btn.innerHTML = `
           <span class="flex items-center gap-2 truncate">
-            <span class="w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-zinc-600'} shrink-0"></span>
+            <span class="w-1.5 h-1.5 rounded-full shrink-0 transition-colors" style="background-color: ${isActive ? 'var(--preview-accent)' : '#52525b'};"></span>
             <span class="truncate sidebar-label ${sidebarCollapsed ? 'hidden' : ''}">${title}</span>
           </span>
           ${mockTabs.length > 1 ? `<span onclick="closeMockTab(event, ${index})" class="text-zinc-500 hover:text-white px-1 sidebar-label ${sidebarCollapsed ? 'hidden' : ''}">×</span>` : ''}
@@ -1224,59 +1228,125 @@
     }
 
     // =========================================================================
-    // 5. THEME STUDIO EN DIRECT
+    // 5. THEME STUDIO EN DIRECT (UI + Mockup 3D + Scène Three.js)
     // =========================================================================
     const themePresets = {
       noir: {
         name: 'azot-noir.azot-theme.json',
+        siteBg: '#060607',
         bg: '#08080A',
         sidebar: '#0B0B0D',
         accent: '#FFFFFF',
-        blur: '28px saturate(140%)'
+        rgb: '255, 255, 255',
+        glowHex: 0xffffff,
+        glassHex: 0x71717a,
+        obsidianHex: 0x111114
       },
       oled: {
         name: 'oled-pitch.azot-theme.json',
+        siteBg: '#000000',
         bg: '#000000',
-        sidebar: '#000000',
-        accent: '#E4E4E7',
-        blur: '20px saturate(100%)'
+        sidebar: '#020203',
+        accent: '#D4D4D8',
+        rgb: '212, 212, 216',
+        glowHex: 0xd4d4d8,
+        glassHex: 0x52525b,
+        obsidianHex: 0x070708
       },
       smoke: {
-        name: 'silver-smoke.azot-theme.json',
-        bg: '#141418',
-        sidebar: '#19191F',
-        accent: '#F4F4F5',
-        blur: '32px saturate(160%)'
+        name: 'silver-ice.azot-theme.json',
+        siteBg: '#07090E',
+        bg: '#0B0F17',
+        sidebar: '#0E131D',
+        accent: '#7DD3FC',
+        rgb: '125, 211, 252',
+        glowHex: 0x7dd3fc,
+        glassHex: 0x38bdf8,
+        obsidianHex: 0x0f172a
       },
       emerald: {
         name: 'obsidian-mint.azot-theme.json',
-        bg: '#070A09',
-        sidebar: '#0A0E0C',
-        accent: '#A7F3D0',
-        blur: '28px saturate(145%)'
+        siteBg: '#050907',
+        bg: '#070D0A',
+        sidebar: '#0A120E',
+        accent: '#6EE7B7',
+        rgb: '110, 231, 183',
+        glowHex: 0x6ee7b7,
+        glassHex: 0x34d399,
+        obsidianHex: 0x091510
       }
     };
+
+    function hexToRgbTuple(hex) {
+      const clean = hex.replace('#', '');
+      const num = parseInt(clean, 16);
+      return `${(num >> 16) & 255}, ${(num >> 8) & 255}, ${num & 255}`;
+    }
+
+    function updateThreeSceneColors(glowHex, glassHex, obsidianHex) {
+      const s = window.azot3DScene;
+      if (!s || !s.pointGlow) return;
+      s.pointGlow.color.setHex(glowHex);
+      s.rimLight.color.setHex(glowHex);
+      s.smokyGlassMat.color.setHex(glassHex);
+      s.matteObsidianMat.color.setHex(obsidianHex);
+    }
+
+    function setActivePresetButton(activeKey) {
+      document.querySelectorAll('.theme-preset-btn').forEach(btn => {
+        const isCurrent = btn.dataset.preset === activeKey;
+        btn.classList.toggle('bg-white/[0.08]', isCurrent);
+        btn.classList.toggle('ring-2', isCurrent);
+        btn.classList.toggle('ring-white', isCurrent);
+        btn.classList.toggle('border-white/30', isCurrent);
+        btn.classList.toggle('bg-white/[0.03]', !isCurrent);
+        btn.classList.toggle('border-white/10', !isCurrent);
+      });
+    }
 
     function applyThemePreset(key) {
       const preset = themePresets[key];
       if (!preset) return;
 
-      document.documentElement.style.setProperty('--preview-bg', preset.bg);
-      document.documentElement.style.setProperty('--preview-sidebar', preset.sidebar);
-      document.documentElement.style.setProperty('--preview-accent', preset.accent);
+      const root = document.documentElement;
+      root.style.setProperty('--bg-base', preset.siteBg);
+      root.style.setProperty('--preview-bg', preset.bg);
+      root.style.setProperty('--preview-sidebar', preset.sidebar);
+      root.style.setProperty('--preview-accent', preset.accent);
+      root.style.setProperty('--accent-color', preset.accent);
+      root.style.setProperty('--accent-rgb', preset.rgb);
+      window.mockAtomColor = preset.rgb;
 
-      document.getElementById('theme-json-name').textContent = preset.name;
-      document.getElementById('theme-val-bg').textContent = preset.bg;
-      document.getElementById('theme-val-blur').textContent = preset.blur;
-      document.getElementById('theme-val-accent').textContent = preset.accent;
+      const jsonNameEl = document.getElementById('theme-json-name');
+      if (jsonNameEl) jsonNameEl.textContent = preset.name;
 
-      document.querySelectorAll('.theme-preset-btn').forEach(btn => {
-        const isCurrent = btn.dataset.preset === key;
-        btn.classList.toggle('bg-white/[0.08]', isCurrent);
-        btn.classList.toggle('border-white/25', isCurrent);
-        btn.classList.toggle('bg-white/[0.03]', !isCurrent);
-        btn.classList.toggle('border-white/10', !isCurrent);
-      });
+      updateThreeSceneColors(preset.glowHex, preset.glassHex, preset.obsidianHex);
+      setActivePresetButton(key);
+    }
+
+    function applyCustomThemeColor(hex) {
+      const rgb = hexToRgbTuple(hex);
+      const numericHex = parseInt(hex.replace('#', ''), 16);
+
+      const root = document.documentElement;
+      root.style.setProperty('--bg-base', '#060608');
+      root.style.setProperty('--preview-bg', '#09090C');
+      root.style.setProperty('--preview-sidebar', '#0C0C10');
+      root.style.setProperty('--preview-accent', hex);
+      root.style.setProperty('--accent-color', hex);
+      root.style.setProperty('--accent-rgb', rgb);
+      window.mockAtomColor = rgb;
+
+      const swatch = document.getElementById('custom-color-swatch');
+      if (swatch) {
+        swatch.style.background = hex;
+      }
+
+      const jsonNameEl = document.getElementById('theme-json-name');
+      if (jsonNameEl) jsonNameEl.textContent = `custom-${hex.toLowerCase()}.azot-theme.json`;
+
+      updateThreeSceneColors(numericHex, numericHex, 0x111116);
+      setActivePresetButton('custom');
     }
 
     // =========================================================================
@@ -1323,14 +1393,12 @@
     (function detectUserOS() {
       const ua = navigator.userAgent.toLowerCase();
       const label = document.getElementById('os-download-label');
-      if (ua.includes('win')) {
-        label.textContent = 'Télécharger pour Windows';
-      } else if (ua.includes('mac')) {
-        label.textContent = 'Voir sur GitHub (macOS bientôt)';
+      if (ua.includes('mac')) {
+        label.textContent = 'Télécharger (Windows)';
       } else if (ua.includes('linux')) {
-        label.textContent = 'Voir sur GitHub (Linux bientôt)';
+        label.textContent = 'Télécharger (Windows)';
       } else {
-        label.textContent = 'Télécharger Azot (Windows)';
+        label.textContent = 'Télécharger (Windows)';
       }
     })();
 
