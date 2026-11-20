@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KRYPT — Vos secrets, sans le bruit.</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-base: #050506;
+      --surface-glass: rgba(15, 15, 18, 0.72);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --accent: #ffffff;
+      --accent-rgb: 255, 255, 255;
+      --app-bg: #08080a;
+      --app-sidebar: #0c0c0f;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+    }
+
+    input {
+      user-select: text;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-base);
+      color: #f4f4f6;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      transition: background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Arrière-plan Constellation / Plexus */
+    #plexus-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ambient-radial {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 35%, rgba(var(--accent-rgb), 0.075) 0%, transparent 62%);
+      z-index: 0;
+      pointer-events: none;
+      transition: background 0.5s ease;
+    }
+
+    .glass-pill {
+      background: rgba(12, 12, 15, 0.68);
+      backdrop-filter: blur(20px) saturate(140%);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    .glass-card {
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.012) 100%);
+      backdrop-filter: blur(24px) saturate(135%);
+      -webkit-backdrop-filter: blur(24px) saturate(135%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
+    /* Fenêtre Live App Preview fidèle à KRYPT Windows */
+    .krypt-window {
+      background: var(--app-bg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow:
+        0 40px 110px rgba(0, 0, 0, 0.92),
+        0 0 80px rgba(var(--accent-rgb), 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      transition: background-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    /* Pilule active glissante dans la sidebar de la preview */
+    .sidebar-nav-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-active-pill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(var(--accent-rgb), 0.09);
+      border: 1px solid rgba(var(--accent-rgb), 0.18);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+      pointer-events: none;
+      z-index: 0;
+      transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), height 280ms cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .nav-item {
+      position: relative;
+      z-index: 1;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-radius: 10px;
+      color: rgba(244, 244, 246, 0.58);
+      font-size: 12.5px;
+      cursor: pointer;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1), color 180ms ease;
+    }
+
+    .nav-item:hover {
+      transform: translateX(3px);
+      color: rgba(244, 244, 246, 0.95);
+    }
+
+    .nav-item:active {
+      transform: scale(0.97);
+    }
+
+    .nav-item.active {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .nav-item svg {
+      flex-shrink: 0;
+      transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav-item:hover svg {
+      transform: scale(1.08);
+    }
+
+    /* Animation de transition de vue centrale */
+    @keyframes viewReveal {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .view-animate {
+      animation: viewReveal 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Slider monochrome */
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #050506;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-white/20 selection:text-white">
+
+  <!-- Fond interactif Constellation / Plexus -->
+  <div class="ambient-radial"></div>
+  <canvas id="plexus-canvas"></canvas>
+
+  <!-- EN-TÊTE MINIMALISTE -->
+  <header class="fixed top-0 left-0 right-0 z-40 px-4 sm:px-8 py-4 pointer-events-none">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <a href="#" class="glass-pill px-3.5 py-1.5 rounded-full flex items-center gap-2.5 text-xs font-semibold tracking-[0.22em] text-white pointer-events-auto hover:border-white/25 transition-all">
+        <svg class="w-4 h-4" style="color: var(--accent);" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="24" stroke="currentColor" stroke-opacity="0.3" stroke-width="2.5"/>
+          <path d="M24 20V44M24 32L40 20M30 27.5L41 44" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="40" cy="20" r="3.5" fill="currentColor"/>
+          <circle cx="41" cy="44" r="3.5" fill="currentColor"/>
+        </svg>
+        <span>KRYPT</span>
+      </a>
+
+      <nav class="hidden sm:flex items-center gap-1 glass-pill px-2 py-1 rounded-full pointer-events-auto">
+        <a href="#preview" class="px-3.5 py-1 rounded-full text-xs text-zinc-400 hover:text-white transition-colors">Aperçu</a>
+        <a href="#installer" class="px-3.5 py-1 rounded-full text-xs text-zinc-400 hover:text-white transition-colors">Installation</a>
+        <a href="https://github.com/CeBonVieuxAxel/Krypt" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1 rounded-full text-xs text-zinc-400 hover:text-white transition-colors">GitHub</a>
+      </nav>
+
+      <a href="https://github.com/CeBonVieuxAxel/Krypt/releases/latest" target="_blank" rel="noopener noreferrer" class="pointer-events-auto px-4 py-1.5 rounded-full text-xs font-semibold text-black transition-all hover:opacity-90" style="background-color: var(--accent); box-shadow: 0 0 24px rgba(var(--accent-rgb), 0.22);">
+        Télécharger
+      </a>
+    </div>
+  </header>
+
+  <main class="relative z-10">
+
+    <!-- HERO SECTION -->
+    <section class="pt-32 pb-12 px-4 sm:px-8 max-w-6xl mx-auto flex flex-col items-center text-center">
+      <div class="w-16 h-16 rounded-full glass-pill flex items-center justify-center mb-6">
+        <svg class="w-8 h-8 transition-colors duration-300" style="color: var(--accent);" viewBox="0 0 64 64" fill="none">
+          <circle cx="32" cy="32" r="24" stroke="currentColor" stroke-opacity="0.25" stroke-width="2.2"/>
+          <path d="M24 20V44M24 32L40 20M30 27.5L41 44" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="40" cy="20" r="3.2" fill="currentColor"/>
+          <circle cx="41" cy="44" r="3.2" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <h1 class="text-5xl sm:text-7xl font-semibold tracking-[0.32em] pl-[0.32em] text-white leading-none">
+        KRYPT
+      </h1>
+
+      <p class="mt-4 text-lg sm:text-xl font-light text-zinc-400 tracking-wide">
+        Vos secrets, sans le bruit.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+        <a href="https://github.com/CeBonVieuxAxel/Krypt/releases/latest" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2.5 px-6 py-3 rounded-full text-xs sm:text-sm font-semibold text-black transition-all hover:-translate-y-0.5" style="background-color: var(--accent); box-shadow: 0 0 36px rgba(var(--accent-rgb), 0.24);">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          <span>Télécharger pour Windows</span>
+        </a>
+
+        <a href="https://github.com/CeBonVieuxAxel/Krypt" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-5 py-3 rounded-full glass-pill text-xs sm:text-sm text-zinc-300 hover:text-white hover:border-white/25 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- LIVE APP PREVIEW (UI EXACTE DE KRYPT WINDOWS) -->
+    <section id="preview" class="py-10 px-4 sm:px-8 max-w-6xl mx-auto">
+      <div class="krypt-window rounded-2xl overflow-hidden flex flex-col min-h-[540px]">
+
+        <!-- Barre de titre frameless Windows -->
+        <div class="h-9 px-4 flex items-center justify-between border-b border-white/[0.06] bg-black/40">
+          <span class="text-[10px] font-semibold tracking-[0.24em] text-zinc-500">KRYPT</span>
+          <div class="flex items-center gap-3 text-zinc-500">
+            <span class="w-2.5 h-[1px] bg-current"></span>
+            <span class="w-2.5 h-2.5 border border-current rounded-[1px]"></span>
+            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Corps de l'application -->
+        <div class="flex-1 flex flex-col md:flex-row overflow-hidden">
+
+          <!-- Barre Latérale Gauche -->
+          <aside class="w-full md:w-60 shrink-0 flex flex-col justify-between p-3.5 border-b md:border-b-0 md:border-r border-white/[0.07]" style="background-color: var(--app-sidebar);">
+            <div class="space-y-4">
+              <!-- Logo + Bouton Verrouiller -->
+              <div class="flex items-center justify-between px-2 pt-1">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-6 h-6 rounded-full bg-white/[0.06] border border-white/15 flex items-center justify-center">
+                    <svg class="w-3.5 h-3.5" style="color: var(--accent);" viewBox="0 0 64 64" fill="none">
+                      <path d="M24 20V44M24 32L40 20M30 27.5L41 44" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <span class="text-xs font-bold tracking-[0.2em] text-white">KRYPT</span>
+                </div>
+
+                <button onclick="showPreviewToast('Coffre verrouillé')" class="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white hover:bg-white/[0.07] transition-all" title="Verrouiller (Ctrl+L)">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Navigation avec pilule glissante -->
+              <nav class="sidebar-nav-container" id="preview-nav-list">
+                <div class="nav-active-pill" id="preview-nav-pill"></div>
+
+                <button type="button" class="nav-item active" data-category="all" onclick="selectPreviewCategory(this, 'all')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                    <span>Tous les secrets</span>
+                  </span>
+                  <span id="badge-all" class="text-[11px] font-mono text-zinc-400">4</span>
+                </button>
+
+                <button type="button" class="nav-item" data-category="login" onclick="selectPreviewCategory(this, 'login')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>
+                    </svg>
+                    <span>Identifiants</span>
+                  </span>
+                </button>
+
+                <button type="button" class="nav-item" data-category="card" onclick="selectPreviewCategory(this, 'card')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                    </svg>
+                    <span>Cartes bancaires</span>
+                  </span>
+                </button>
+
+                <button type="button" class="nav-item" data-category="note" onclick="selectPreviewCategory(this, 'note')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span>Notes sécurisées</span>
+                  </span>
+                </button>
+
+                <button type="button" class="nav-item" data-category="generator" onclick="selectPreviewCategory(this, 'generator')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+                    </svg>
+                    <span>Générateur</span>
+                  </span>
+                </button>
+
+                <button type="button" class="nav-item" data-category="audit" onclick="selectPreviewCategory(this, 'audit')">
+                  <span class="inline-flex items-center gap-2.5">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>
+                    </svg>
+                    <span>Audit de sécurité</span>
+                  </span>
+                </button>
+              </nav>
+            </div>
+
+            <!-- Theme Studio Interactif en bas à gauche -->
+            <div class="pt-4 mt-4 border-t border-white/[0.07] space-y-3 px-1">
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono uppercase tracking-wider text-zinc-500">Theme Studio</span>
+                <span id="active-theme-label" class="text-[10px] font-mono text-zinc-400">Krypt Noir</span>
+              </div>
+
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="applySiteTheme('noir')" class="theme-dot w-5 h-5 rounded-full bg-white ring-2 ring-white/80 ring-offset-2 ring-offset-[#0c0c0f] transition-transform hover:scale-110" data-theme="noir" title="Krypt Noir"></button>
+                <button type="button" onclick="applySiteTheme('graphite')" class="theme-dot w-5 h-5 rounded-full bg-[#8e8e98] opacity-75 hover:opacity-100 transition-transform hover:scale-110" data-theme="graphite" title="Graphite"></button>
+                <button type="button" onclick="applySiteTheme('ice')" class="theme-dot w-5 h-5 rounded-full bg-[#bae6fd] opacity-75 hover:opacity-100 transition-transform hover:scale-110" data-theme="ice" title="Ice Blue"></button>
+                <button type="button" onclick="applySiteTheme('emerald')" class="theme-dot w-5 h-5 rounded-full bg-[#6ee7b7] opacity-75 hover:opacity-100 transition-transform hover:scale-110" data-theme="emerald" title="Emerald"></button>
+              </div>
+
+              <button type="button" onclick="showPreviewToast('Coffre exporté (.krypt)')" class="w-full py-1.5 px-2.5 rounded-lg bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.07] flex items-center gap-2 text-[11px] text-zinc-400 hover:text-zinc-200 transition-colors">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                <span>Exporter le coffre</span>
+              </button>
+            </div>
+          </aside>
+
+          <!-- Zone Centrale Interactive -->
+          <div class="flex-1 flex flex-col p-5 sm:p-6 space-y-5 relative overflow-hidden">
+            <!-- Barre supérieure : Recherche + Importer CSV + Nouveau secret -->
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div class="relative flex-1 min-w-[200px] max-w-md">
+                <svg class="w-3.5 h-3.5 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input
+                  id="preview-search"
+                  type="text"
+                  oninput="renderPreviewMain()"
+                  placeholder="Rechercher dans le coffre... (Ctrl + F)"
+                  class="w-full pl-9 pr-4 py-2 rounded-xl bg-white/[0.035] border border-white/[0.08] focus:border-white/25 text-xs text-white placeholder-zinc-500 outline-none transition-colors"
+                />
+              </div>
+
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="showPreviewToast('Sélecteur CSV prêt')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.09] text-xs text-zinc-200 transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                  <span>Importer CSV</span>
+                </button>
+
+                <button type="button" onclick="addSampleSecret()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-black transition-all hover:opacity-90" style="background-color: var(--accent);">
+                  <span>+ Nouveau secret</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Conteneur dynamique de la vue -->
+            <div id="preview-main-content" class="flex-1 space-y-3 view-animate"></div>
+
+            <!-- Toast interne de la preview -->
+            <div id="preview-toast" class="absolute bottom-4 right-4 px-3.5 py-2 rounded-xl bg-black/85 border border-white/15 text-[11px] font-mono text-white opacity-0 translate-y-2 transition-all duration-200 pointer-events-none">
+              Copié
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION INSTALLATION WINDOWS (ÉPURÉE) -->
+    <section id="installer" class="py-16 px-4 sm:px-8 max-w-4xl mx-auto space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Windows -->
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 border-white/20">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2.5 text-white">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5.3L10.2 4.3V11.3H3V5.3ZM3 18.7L10.2 19.7V12.7H3V18.7ZM11.1 4.2L21 2.8V11.3H11.1V4.2ZM11.1 19.8L21 21.2V12.7H11.1V19.8Z"/>
+              </svg>
+              <span class="text-sm font-medium">Windows</span>
+            </div>
+            <span class="text-[11px] font-mono text-zinc-400">v1.0.0</span>
+          </div>
+          <a href="https://github.com/CeBonVieuxAxel/Krypt/releases/latest" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl text-center text-xs font-semibold text-black transition-all hover:opacity-90" style="background-color: var(--accent);">
+            Krypt-Setup-1.0.0.exe
+          </a>
+        </div>
+
+        <!-- macOS -->
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 opacity-60">
+          <div class="flex items-center gap-2.5 text-zinc-300">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.96 6.33c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.72 1.4-.58.68-1.1 1.79-.96 2.84 1.04.08 2.08-.52 2.72-1.3"/>
+            </svg>
+            <span class="text-sm font-medium">macOS</span>
+          </div>
+          <div class="py-2 px-3 rounded-xl bg-white/[0.03] border border-white/10 text-center text-xs font-mono text-zinc-500">
+            Non disponible
+          </div>
+        </div>
+
+        <!-- Linux -->
+        <div class="glass-card rounded-2xl p-5 flex flex-col justify-between space-y-4 opacity-60">
+          <div class="flex items-center gap-2.5 text-zinc-300">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>
+            </svg>
+            <span class="text-sm font-medium">Linux</span>
+          </div>
+          <div class="py-2 px-3 rounded-xl bg-white/[0.03] border border-white/10 text-center text-xs font-mono text-zinc-500">
+            Non disponible
+          </div>
+        </div>
+      </div>
+
+      <!-- Commande PowerShell -->
+      <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>PowerShell (Windows)</span>
+          <a href="https://github.com/CeBonVieuxAxel/Krypt" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">CeBonVieuxAxel/Krypt ↗</a>
+        </div>
+        <div class="glass-pill rounded-xl p-3 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <code id="ps-install-cmd" class="font-mono text-xs text-zinc-200 overflow-x-auto whitespace-nowrap py-0.5">$r = irm "https://api.github.com/repos/CeBonVieuxAxel/Krypt/releases/latest"; $a = $r.assets | Where-Object { $_.name -like "*.exe" } | Select-Object -First 1; iwr $a.browser_download_url -OutFile "$env:TEMP\$($a.name)"; Start-Process "$env:TEMP\$($a.name)"</code>
+          <button type="button" onclick="copyPsCommand(this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
+            Copier
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- PIED DE PAGE SOBRE -->
+  <footer class="relative z-10 border-t border-white/[0.07] py-8 px-4 sm:px-8 mt-8">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
+      <div>
+        KRYPT — Créé par <a href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener noreferrer" class="text-white font-medium hover:underline">Axel LEFEBVRE</a>
+      </div>
+      <a href="https://github.com/CeBonVieuxAxel/Krypt" target="_blank" rel="noopener noreferrer" class="font-mono hover:text-white transition-colors">
+        https://github.com/CeBonVieuxAxel/Krypt
+      </a>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. CONSTELLATION / PLEXUS INTERACTIF ("TOILE D'ARAIGNÉE" AU CURSEUR)
+    // =========================================================================
+    window.plexusRgb = '255, 255, 255';
+
+    (function initPlexusCanvas() {
+      const canvas = document.getElementById('plexus-canvas');
+      const ctx = canvas.getContext('2d');
+      let w = 0, h = 0;
+      let nodes = [];
+      const mouse = { x: -9999, y: -9999, active: false };
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        const count = Math.min(95, Math.max(42, Math.floor((w * h) / 17000)));
+        nodes = Array.from({ length: count }, () => ({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          r: 1.2 + Math.random() * 1.4
+        }));
+      }
+
+      window.addEventListener('resize', resize);
+      resize();
+
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        mouse.active = true;
+      });
+
+      window.addEventListener('mouseleave', () => {
+        mouse.active = false;
+      });
+
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) {
+          mouse.x = e.touches[0].clientX;
+          mouse.y = e.touches[0].clientY;
+          mouse.active = true;
+        }
+      }, { passive: true });
+
+      function animate() {
+        ctx.clearRect(0, 0, w, h);
+        const rgb = window.plexusRgb;
+        const linkDist = 145;
+        const mouseDist = 210;
+
+        for (let i = 0; i < nodes.length; i++) {
+          const n = nodes[i];
+
+          // Légère attraction magnétique vers le crosshair
+          if (mouse.active) {
+            const dxm = mouse.x - n.x;
+            const dym = mouse.y - n.y;
+            const distM = Math.hypot(dxm, dym);
+            if (distM < mouseDist && distM > 25) {
+              const pull = (1 - distM / mouseDist) * 0.018;
+              n.vx += (dxm / distM) * pull;
+              n.vy += (dym / distM) * pull;
+            }
+          }
+
+          // Limitation de vitesse et déplacement fluide
+          const speed = Math.hypot(n.vx, n.vy);
+          if (speed > 0.85) {
+            n.vx = (n.vx / speed) * 0.85;
+            n.vy = (n.vy / speed) * 0.85;
+          }
+
+          n.x += n.vx;
+          n.y += n.vy;
+
+          if (n.x < 0) { n.x = 0; n.vx *= -1; }
+          if (n.x > w) { n.x = w; n.vx *= -1; }
+          if (n.y < 0) { n.y = 0; n.vy *= -1; }
+          if (n.y > h) { n.y = h; n.vy *= -1; }
+
+          // Liens toile d'araignée entre nœuds proches
+          for (let j = i + 1; j < nodes.length; j++) {
+            const n2 = nodes[j];
+            const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+            if (dist < linkDist) {
+              const alpha = (1 - dist / linkDist) * 0.16;
+              ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
+              ctx.lineWidth = 0.8;
+              ctx.beginPath();
+              ctx.moveTo(n.x, n.y);
+              ctx.lineTo(n2.x, n2.y);
+              ctx.stroke();
+            }
+          }
+
+          // Fils lumineux attachés directement au curseur (crosshair)
+          if (mouse.active) {
+            const distCursor = Math.hypot(n.x - mouse.x, n.y - mouse.y);
+            if (distCursor < mouseDist) {
+              const alpha = (1 - distCursor / mouseDist) * 0.42;
+              ctx.strokeStyle = `rgba(${rgb}, ${alpha})`;
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(n.x, n.y);
+              ctx.lineTo(mouse.x, mouse.y);
+              ctx.stroke();
+            }
+          }
+
+          // Point nodal
+          ctx.fillStyle = `rgba(${rgb}, 0.45)`;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Petit nœud central sur le crosshair
+        if (mouse.active) {
+          ctx.fillStyle = `rgba(${rgb}, 0.75)`;
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // =========================================================================
+    // 2. THEME STUDIO EN DIRECT (PREVIEW + CONSTELLATION)
+    // =========================================================================
+    const siteThemes = {
+      noir: {
+        label: 'Krypt Noir',
+        bg: '#050506',
+        appBg: '#08080a',
+        sidebar: '#0c0c0f',
+        accent: '#ffffff',
+        rgb: '255, 255, 255'
+      },
+      graphite: {
+        label: 'Graphite',
+        bg: '#070709',
+        appBg: '#0b0b0e',
+        sidebar: '#101014',
+        accent: '#a1a1aa',
+        rgb: '161, 161, 170'
+      },
+      ice: {
+        label: 'Ice Blue',
+        bg: '#05080d',
+        appBg: '#080d14',
+        sidebar: '#0b111b',
+        accent: '#bae6fd',
+        rgb: '186, 230, 253'
+      },
+      emerald: {
+        label: 'Emerald',
+        bg: '#040907',
+        appBg: '#070e0b',
+        sidebar: '#0a1410',
+        accent: '#6ee7b7',
+        rgb: '110, 231, 183'
+      }
+    };
+
+    function applySiteTheme(key) {
+      const t = siteThemes[key];
+      if (!t) return;
+
+      const root = document.documentElement;
+      root.style.setProperty('--bg-base', t.bg);
+      root.style.setProperty('--app-bg', t.appBg);
+      root.style.setProperty('--app-sidebar', t.sidebar);
+      root.style.setProperty('--accent', t.accent);
+      root.style.setProperty('--accent-rgb', t.rgb);
+      window.plexusRgb = t.rgb;
+
+      document.getElementById('active-theme-label').textContent = t.label;
+
+      document.querySelectorAll('.theme-dot').forEach(dot => {
+        const isCurrent = dot.dataset.theme === key;
+        dot.classList.toggle('ring-2', isCurrent);
+        dot.classList.toggle('ring-white/80', isCurrent);
+        dot.classList.toggle('ring-offset-2', isCurrent);
+        dot.classList.toggle('ring-offset-[#0c0c0f]', isCurrent);
+        dot.classList.toggle('opacity-100', isCurrent);
+        dot.classList.toggle('opacity-75', !isCurrent);
+      });
+    }
+
+    // =========================================================================
+    // 3. INTERACTIONS DE LA PREVIEW KRYPT WINDOWS
+    // =========================================================================
+    const previewSecrets = [
+      { id: 1, category: 'login', title: 'GitHub — CeBonVieuxAxel', sub: 'axel@azot.dev', value: 'x9#K!vP2@mL8$qR4', revealed: false },
+      { id: 2, category: 'login', title: 'Proton Mail', sub: 'axel.lefebvre@proton.me', value: 'Az0t!N0ir#2026$Vault', revealed: false },
+      { id: 3, category: 'card', title: 'Carte Principale', sub: '•••• •••• •••• 4829 · 09/29', value: '4532 8910 4412 4829', revealed: false },
+      { id: 4, category: 'note', title: 'Clé SSH Ed25519', sub: 'Poste Windows Principal', value: 'SHA256:krypt-local-vault-9941a', revealed: false }
+    ];
+
+    let activeCategory = 'all';
+    let genLength = 20;
+    let genSymbols = true;
+
+    function updateNavPill(targetBtn) {
+      const pill = document.getElementById('preview-nav-pill');
+      if (!pill || !targetBtn) return;
+      pill.style.height = `${targetBtn.offsetHeight}px`;
+      pill.style.transform = `translateY(${targetBtn.offsetTop}px)`;
+    }
+
+    function selectPreviewCategory(btn, category) {
+      document.querySelectorAll('#preview-nav-list .nav-item').forEach(el => el.classList.remove('active'));
+      btn.classList.add('active');
+      activeCategory = category;
+      updateNavPill(btn);
+      renderPreviewMain();
+    }
+
+    function generatePasswordString(len, useSymbols) {
+      const base = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+      const syms = '!@#$%&*_-+=?';
+      const charset = useSymbols ? base + syms : base;
+      const arr = new Uint32Array(len);
+      crypto.getRandomValues(arr);
+      return Array.from(arr, n => charset[n % charset.length]).join('');
+    }
+
+    function renderPreviewMain() {
+      const container = document.getElementById('preview-main-content');
+      const query = (document.getElementById('preview-search')?.value || '').toLowerCase().trim();
+      document.getElementById('badge-all').textContent = previewSecrets.length;
+
+      // Relancer l'animation fluide
+      container.classList.remove('view-animate');
+      void container.offsetWidth;
+      container.classList.add('view-animate');
+
+      if (activeCategory === 'generator') {
+        const pwd = generatePasswordString(genLength, genSymbols);
+        const entropy = Math.round(genLength * (genSymbols ? 6.1 : 5.8));
+        container.innerHTML = `
+          <div class="rounded-2xl bg-white/[0.025] border border-white/[0.08] p-5 space-y-5">
+            <div class="text-sm font-semibold text-white">Générateur cryptographique</div>
+            <div class="p-3.5 rounded-xl bg-black/60 border border-white/[0.09] font-mono text-sm text-white truncate">
+              ${pwd}
+            </div>
+            <div class="space-y-2">
+              <div class="flex justify-between text-xs text-zinc-400">
+                <span>Longueur</span>
+                <span class="font-mono text-white">${genLength}</span>
+              </div>
+              <input type="range" min="10" max="36" value="${genLength}" oninput="genLength=Number(this.value); renderPreviewMain();" class="w-full cursor-pointer" />
+            </div>
+            <label class="inline-flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
+              <input type="checkbox" ${genSymbols ? 'checked' : ''} onchange="genSymbols=this.checked; renderPreviewMain();" class="rounded cursor-pointer" />
+              <span>Symboles</span>
+            </label>
+            <div class="flex items-center gap-2.5 pt-1">
+              <button type="button" onclick="renderPreviewMain()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.11] border border-white/[0.12] text-xs font-medium text-white transition-colors">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                <span>Régénérer</span>
+              </button>
+              <button type="button" onclick="copyPreviewSecret('${pwd}')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-black transition-opacity hover:opacity-90" style="background-color: var(--accent);">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                <span>Copier</span>
+              </button>
+            </div>
+            <div class="text-[11px] font-mono text-zinc-500">Entropie estimée : ${entropy} bits</div>
+          </div>
+        `;
+        return;
+      }
+
+      if (activeCategory === 'audit') {
+        container.innerHTML = `
+          <div class="rounded-2xl bg-white/[0.025] border border-white/[0.08] p-5 space-y-2.5">
+            <div class="text-sm font-semibold text-white">Audit local</div>
+            <p class="text-xs text-zinc-400">Aucun mot de passe faible ou réutilisé détecté.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const filtered = previewSecrets.filter(item => {
+        const matchCat = activeCategory === 'all' || item.category === activeCategory;
+        const matchQuery = !query || item.title.toLowerCase().includes(query) || item.sub.toLowerCase().includes(query);
+        return matchCat && matchQuery;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="rounded-2xl bg-white/[0.02] border border-white/[0.07] p-4 text-xs text-zinc-400">
+            Aucun secret ne correspond à cette vue.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => `
+        <div class="rounded-2xl bg-white/[0.028] hover:bg-white/[0.045] border border-white/[0.08] p-4 flex items-center justify-between gap-4 transition-colors">
+          <div class="min-w-0 space-y-1">
+            <div class="text-xs font-semibold text-white truncate">${item.title}</div>
+            <div class="text-[11px] text-zinc-400 truncate">${item.sub}</div>
+            <div class="text-[11px] font-mono text-zinc-300 pt-0.5">${item.revealed ? item.value : '••••••••••••••••'}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="togglePreviewReveal(${item.id})" class="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.1] text-zinc-300 transition-colors" title="Afficher / Masquer">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <button type="button" onclick="copyPreviewSecret('${item.value}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.07] hover:bg-white/[0.14] text-[11px] font-mono text-white transition-colors">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span>Copier</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function togglePreviewReveal(id) {
+      const target = previewSecrets.find(s => s.id === id);
+      if (target) {
+        target.revealed = !target.revealed;
+        renderPreviewMain();
+      }
+    }
+
+    function addSampleSecret() {
+      previewSecrets.unshift({
+        id: Date.now(),
+        category: activeCategory === 'card' || activeCategory === 'note' ? activeCategory : 'login',
+        title: 'Service Local #' + (previewSecrets.length + 1),
+        sub: 'axel@local.win',
+        value: generatePasswordString(16, true),
+        revealed: false
+      });
+      if (activeCategory === 'generator' || activeCategory === 'audit') {
+        const firstBtn = document.querySelector('#preview-nav-list .nav-item[data-category="all"]');
+        selectPreviewCategory(firstBtn, 'all');
+      } else {
+        renderPreviewMain();
+      }
+      showPreviewToast('Secret chiffré (AES-256-GCM)');
+    }
+
+    function copyPreviewSecret(val) {
+      const temp = document.createElement('textarea');
+      temp.value = val;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showPreviewToast('Copié — effacement presse-papiers dans 15s');
+    }
+
+    let previewToastTimer;
+    function showPreviewToast(msg) {
+      const el = document.getElementById('preview-toast');
+      el.textContent = msg;
+      el.classList.remove('opacity-0', 'translate-y-2');
+      clearTimeout(previewToastTimer);
+      previewToastTimer = setTimeout(() => {
+        el.classList.add('opacity-0', 'translate-y-2');
+      }, 2200);
+    }
+
+    function copyPsCommand(btn) {
+      const code = document.getElementById('ps-install-cmd').textContent;
+      const temp = document.createElement('textarea');
+      temp.value = code;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      const old = btn.textContent;
+      btn.textContent = 'Copié !';
+      setTimeout(() => { btn.textContent = old; }, 2000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderPreviewMain();
+      requestAnimationFrame(() => {
+        const activeBtn = document.querySelector('#preview-nav-list .nav-item.active');
+        updateNavPill(activeBtn);
+      });
+    });
+
+    window.addEventListener('resize', () => {
+      const activeBtn = document.querySelector('#preview-nav-list .nav-item.active');
+      updateNavPill(activeBtn);
+    });
+  </script>
+</body>
+</html>
