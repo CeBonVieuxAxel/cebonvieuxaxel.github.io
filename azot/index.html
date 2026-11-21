@@ -131,7 +131,6 @@
       transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
       border-radius: 18px;
       background: var(--preview-bg);
-      /* Bordure métallique aluminium brossé comme sur le visuel */
       box-shadow:
         10px 14px 0px -1px rgba(175, 178, 186, 0.28),
         11px 15px 0px 0px rgba(255, 255, 255, 0.16),
@@ -261,6 +260,7 @@
       <!-- Navigation centrale verre fumé -->
       <nav class="hidden md:flex items-center gap-1 glass-pill px-2 py-1.5 rounded-full pointer-events-auto">
         <a href="#experience" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Aperçu</a>
+        <a href="#fonctionnalites" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Fonctionnalités</a>
         <a href="#themes" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Thèmes</a>
         <a href="#telecharger" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">Installer</a>
         <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="px-4 py-1.5 rounded-full text-xs font-medium text-zinc-400 hover:text-white hover:bg-white/5 transition-all">GitHub</a>
@@ -287,8 +287,9 @@
 
         <!-- Colonne Gauche : Titre & Accroche -->
         <div class="lg:col-span-5 flex flex-col items-start text-left space-y-6 z-20">
-          <span class="glass-pill px-3 py-1 rounded-full text-[11px] font-mono text-zinc-400">
-            v1.0.0-beta
+          <span class="glass-pill px-3 py-1 rounded-full text-[11px] font-mono text-zinc-300 inline-flex items-center gap-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>v1.1.0</span>
           </span>
 
           <div class="space-y-2.5">
@@ -339,8 +340,8 @@
                   </div>
 
                   <div class="flex items-center gap-1.5 text-zinc-500">
-                    <span class="w-2 h-2 rounded-full border border-white/20 hover:bg-white/40 transition-colors cursor-pointer"></span>
-                    <span class="w-2 h-2 rounded-full border border-white/20 hover:bg-white/40 transition-colors cursor-pointer"></span>
+                    <!-- Indicateur RAM discret en direct -->
+                    <span id="mock-ram-badge" class="sidebar-label px-1.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-[9px] font-mono text-zinc-400" title="Consommation RAM optimisée (-50 % vs Chrome)">142 Mo</span>
                     <button onclick="toggleMockSidebar()" class="icon-btn-spring p-1 rounded text-zinc-400" title="Réduire/Déployer la sidebar">
                       <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
@@ -377,13 +378,13 @@
                   </div>
 
                   <div class="flex items-center gap-1 sidebar-label">
-                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/[0.05] text-[10px] font-mono text-zinc-300" title="Azot Shield actif">
+                    <button onclick="showMockToast('Azot Shield : 142 pubs bloquées · 19.8s gagnées')" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-white/[0.05] hover:bg-white/[0.1] text-[10px] font-mono text-zinc-300 transition-colors" title="Azot Shield + VirusTotal">
                       <svg class="w-3 h-3 transition-colors" style="color: var(--preview-accent);" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
-                      <span id="mock-shield-count">2</span>
-                    </span>
-                    <span class="p-1 text-zinc-400" title="Azot Guard actif">
-                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    </span>
+                      <span id="mock-shield-count">142</span>
+                    </button>
+                    <button onclick="showMockToast('Azot Guard + Scan VirusTotal actifs')" class="p-1 text-zinc-400 hover:text-white transition-colors" title="Azot Guard actif">
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+                    </button>
                   </div>
                 </div>
 
@@ -412,24 +413,28 @@
                 </div>
               </div>
 
-              <!-- Footer Sidebar : Historique, Extensions, Thèmes, Paramètres -->
-              <div class="flex items-center justify-between px-1 pt-2 border-t border-white/[0.06] text-zinc-400">
-                <button onclick="showMockToast('Historique (⌘H)')" class="icon-btn-spring p-1.5 rounded-md" title="Historique">
+              <!-- Footer Sidebar : Azot Host, Historique, Téléchargements, Extensions, Paramètres -->
+              <div class="flex items-center justify-between px-0.5 pt-2 border-t border-white/[0.06] text-zinc-400">
+                <button onclick="toggleMockHostView()" id="btn-mock-host" class="icon-btn-spring p-1.5 rounded-md relative" title="Azot Host (Hébergement Local & Public)">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 absolute top-1 right-1"></span>
+                </button>
+                <button onclick="showMockToast('Historique (7h · 24h · All time)')" class="icon-btn-spring p-1.5 rounded-md" title="Historique">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </button>
-                <button onclick="showMockToast('Extensions Chromium')" class="icon-btn-spring p-1.5 rounded-md" title="Extensions">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.24c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.24c-.464.18-.894.527-.967 1.02Z"/></svg>
+                <button onclick="showMockToast('Téléchargements récents')" class="icon-btn-spring p-1.5 rounded-md" title="Téléchargements">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </button>
-                <a href="#themes" class="icon-btn-spring p-1.5 rounded-md" title="Theme Studio">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
-                </a>
-                <button onclick="showMockToast('Paramètres (⌘,)')" class="icon-btn-spring p-1.5 rounded-md" title="Paramètres">
+                <button onclick="showMockToast('Extensions Chromium')" class="icon-btn-spring p-1.5 rounded-md" title="Extensions">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M17.5 14v7M14 17.5h7"/></svg>
+                </button>
+                <button onclick="showMockToast('Azot Settings v1.1.0')" class="icon-btn-spring p-1.5 rounded-md" title="Paramètres">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                 </button>
               </div>
             </aside>
 
-            <!-- Viewport interne du Mockup Azot (Nouvel Onglet) -->
+            <!-- Viewport interne du Mockup Azot (Nouvel Onglet + Vue Azot Host interactive) -->
             <div id="mock-viewport" class="relative flex-1 flex flex-col items-center justify-center p-6 overflow-hidden transition-all duration-500" style="background: radial-gradient(circle at 50% 42%, rgba(var(--accent-rgb), 0.12) 0%, transparent 65%);">
               <!-- Mini canvas d'atomes 3D dans l'écran du navigateur -->
               <canvas id="mock-inner-canvas" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
@@ -438,12 +443,12 @@
               <div id="mock-progress-bar" class="absolute top-0 left-0 h-[2px] w-0 transition-all duration-300 opacity-0" style="background-color: var(--preview-accent);"></div>
 
               <!-- Notification Toast interne -->
-              <div id="mock-toast" class="absolute top-3 right-3 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] font-mono text-white opacity-0 transition-opacity duration-200 pointer-events-none">
+              <div id="mock-toast" class="absolute top-3 right-3 z-20 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] font-mono text-white opacity-0 transition-opacity duration-200 pointer-events-none">
                 Action exécutée
               </div>
 
-              <!-- Contenu central du Nouvel Onglet -->
-              <div class="relative z-10 flex flex-col items-center text-center w-full max-w-sm space-y-4">
+              <!-- Vue 1 : Nouvel Onglet par défaut -->
+              <div id="mock-home-view" class="relative z-10 flex flex-col items-center text-center w-full max-w-sm space-y-4">
                 <!-- Logo atomique rotatif -->
                 <div class="relative flex items-center justify-center">
                   <div class="absolute w-16 h-16 rounded-full blur-xl transition-colors duration-500" style="background-color: rgba(var(--accent-rgb), 0.25);"></div>
@@ -473,20 +478,64 @@
                     class="w-full px-4 py-2.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] focus:bg-white/[0.09] border border-white/[0.1] focus:border-white/30 text-center text-xs text-white placeholder-zinc-500 outline-none transition-all shadow-inner"
                   />
                 </form>
+
+                <!-- Raccourci rapide vers la démo Azot Host dans le mockup -->
+                <button type="button" onclick="toggleMockHostView()" class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-[10px] font-mono text-zinc-300 transition-all">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span>Tester Azot Host dans l'aperçu →</span>
+                </button>
               </div>
+
+              <!-- Vue 2 : Aperçu interactif d'Azot Host (Local Wi-Fi / En ligne HTTPS) -->
+              <div id="mock-host-view" class="hidden relative z-10 w-full max-w-sm rounded-2xl bg-[#0D0D11]/90 backdrop-blur-xl border border-white/15 p-4 space-y-3.5 text-left shadow-2xl">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="text-xs font-semibold text-white">Azot Host</span>
+                    <span id="mock-host-status-badge" class="text-[10px] font-mono text-zinc-400">· Local</span>
+                  </div>
+                  <button type="button" onclick="toggleMockHostView()" class="px-2 py-0.5 rounded-md bg-white/[0.06] hover:bg-white/[0.12] text-[10px] font-mono text-zinc-300 transition-colors">
+                    Fermer
+                  </button>
+                </div>
+
+                <!-- Sélecteur Mode Local / Mode En ligne -->
+                <div class="grid grid-cols-2 gap-1 p-1 rounded-xl bg-black/50 border border-white/10">
+                  <button type="button" id="mock-mode-local" onclick="setMockHostMode('local')" class="py-1.5 rounded-lg text-[11px] font-medium bg-white text-black transition-all">
+                    Mode Local
+                  </button>
+                  <button type="button" id="mock-mode-online" onclick="setMockHostMode('online')" class="py-1.5 rounded-lg text-[11px] font-medium text-zinc-400 hover:text-white transition-all">
+                    Mode En ligne
+                  </button>
+                </div>
+
+                <!-- Carte URL active -->
+                <div class="p-3 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <div id="mock-host-url-label" class="text-[10px] text-zinc-400">Réseau local (Wi-Fi / LAN)</div>
+                    <div id="mock-host-url-value" class="text-[11px] font-mono text-white truncate mt-0.5">http://192.168.1.41:4040</div>
+                  </div>
+                  <button type="button" onclick="copyMockHostUrl()" class="shrink-0 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] font-mono text-white transition-colors">
+                    Copier
+                  </button>
+                </div>
+              </div>
+
             </div>
 
           </div>
         </div>
       </div>
 
-      <!-- Badges de bas de Hero fidèles au visuel -->
+      <!-- Badges de bas de Hero mis à jour pour la v1.1.0 -->
       <div class="mt-14 pt-6 border-t border-white/[0.06] flex flex-wrap items-center justify-between gap-4 text-xs font-mono text-zinc-500">
-        <span class="glass-pill px-3 py-1 rounded-full text-zinc-400">v1.0.0-beta</span>
-        <div class="flex items-center gap-6">
-          <span>WebContentsView Isolation</span>
+        <span class="glass-pill px-3 py-1 rounded-full text-zinc-300">v1.1.0</span>
+        <div class="flex flex-wrap items-center gap-4 sm:gap-6">
+          <span class="text-zinc-300">RAM -50% vs Chrome</span>
           <span class="hidden sm:inline">•</span>
-          <span class="hidden sm:inline">Extensions MV3</span>
+          <span>Azot Host Local &amp; Public</span>
+          <span class="hidden sm:inline">•</span>
+          <span>Azot Shield + VirusTotal</span>
           <span class="hidden sm:inline">•</span>
           <span class="hidden sm:inline">Open Source MIT</span>
         </div>
@@ -497,63 +546,63 @@
     <!-- SECTION ARCHITECTURE & EXPÉRIENCE -->
     <section id="experience" class="py-24 px-4 sm:px-8 max-w-7xl mx-auto">
       <div class="max-w-2xl mb-14 space-y-3">
-        <span class="text-xs font-mono uppercase tracking-widest text-zinc-500">Architecture</span>
+        <span class="text-xs font-mono uppercase tracking-widest text-zinc-500">Architecture v1.1</span>
         <h2 class="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
           Conçu pour disparaître derrière le contenu.
         </h2>
         <p class="text-zinc-400 text-sm sm:text-base font-light leading-relaxed">
-          Zéro barre superflue, zéro flux d'actualités imposé, zéro télémétrie. Chaque pixel et chaque milliseconde d'animation sont calibrés pour la fluidité.
+          Zéro barre superflue, zéro télémétrie, une consommation mémoire divisée par deux et un serveur web intégré directement dans votre navigateur.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Carte 1 -->
+        <!-- Carte 1 : Azot Host -->
         <div class="glass-card rounded-2xl p-7 flex flex-col justify-between space-y-6">
           <div class="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="3" x2="9" y2="21"/>
+              <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
             </svg>
           </div>
           <div class="space-y-2">
-            <h3 class="text-lg font-medium text-white">Sidebar Verticale Escamotable</h3>
+            <h3 class="text-lg font-medium text-white">Azot Host Intégré</h3>
             <p class="text-sm text-zinc-400 font-light leading-relaxed">
-              Récupérez 100 % de la hauteur d'écran. Vos onglets glissent avec une pilule active animée au GPU et se rétractent d'un raccourci (<code class="font-mono text-xs text-zinc-300">⌘S</code>).
-            </p>
-          </div>
-        </div>
-
-        <!-- Carte 2 -->
-        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between space-y-6">
-          <div class="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-            </svg>
-          </div>
-          <div class="space-y-2">
-            <h3 class="text-lg font-medium text-white">Palette de Commande Flottante</h3>
-            <p class="text-sm text-zinc-400 font-light leading-relaxed">
-              Appuyez sur <code class="font-mono text-xs text-zinc-300">Ctrl/Cmd + L</code> n'importe où pour invoquer la barre Spotlight translucide au premier plan et naviguer instantanément.
+              Hébergez n'importe quel dossier web en un clic sur votre réseau Wi-Fi/LAN ou publiez-le instantanément en ligne via tunnel HTTPS sécurisé, sans terminal ni compte.
             </p>
           </div>
           <div>
-            <button onclick="openCommandPalette()" class="text-xs font-mono text-zinc-300 hover:text-white inline-flex items-center gap-1.5 border-b border-white/20 pb-0.5 transition-colors">
-              <span>Essayer la palette maintenant</span>
+            <button onclick="scrollToHostPreview()" class="text-xs font-mono text-zinc-300 hover:text-white inline-flex items-center gap-1.5 border-b border-white/20 pb-0.5 transition-colors">
+              <span>Tester Azot Host dans l'aperçu</span>
               <span>→</span>
             </button>
           </div>
         </div>
 
-        <!-- Carte 3 -->
+        <!-- Carte 2 : Optimisation RAM -->
         <div class="glass-card rounded-2xl p-7 flex flex-col justify-between space-y-6">
           <div class="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+              <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/>
             </svg>
           </div>
           <div class="space-y-2">
-            <h3 class="text-lg font-medium text-white">Fondamentaux Complets</h3>
+            <h3 class="text-lg font-medium text-white">RAM -50 % vs Chrome</h3>
             <p class="text-sm text-zinc-400 font-light leading-relaxed">
-              Historique intelligent, paramètres granulaires, restauration de session et support natif des extensions Chromium décompressées (Manifest V3).
+              Mise en veille automatique (<code class="font-mono text-xs text-zinc-300">Tab Sleeping</code>) des onglets inactifs, plafonnement des processus Chromium et moniteur mémoire en direct.
+            </p>
+          </div>
+        </div>
+
+        <!-- Carte 3 : Azot Shield & Guard + VirusTotal -->
+        <div class="glass-card rounded-2xl p-7 flex flex-col justify-between space-y-6">
+          <div class="w-11 h-11 rounded-xl bg-white/[0.06] border border-white/10 flex items-center justify-center text-white">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
+            </svg>
+          </div>
+          <div class="space-y-2">
+            <h3 class="text-lg font-medium text-white">Azot Shield + VirusTotal</h3>
+            <p class="text-sm text-zinc-400 font-light leading-relaxed">
+              Blocage des publicités et traqueurs avec estimation du temps gagné, interception des pop-ups et analyse VirusTotal URL en un clic.
             </p>
           </div>
         </div>
@@ -561,26 +610,26 @@
     </section>
 
     <!-- SECTION FONCTIONNALITÉS (Ultra-concise) -->
-    <section id="experience" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto">
+    <section id="fonctionnalites" class="py-20 px-4 sm:px-8 max-w-7xl mx-auto">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
           <div class="flex items-center gap-3 text-white">
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="3"/><line x1="9" y1="3" x2="9" y2="21"/>
+              <rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/>
             </svg>
-            <h3 class="text-sm font-medium">Sidebar verticale</h3>
+            <h3 class="text-sm font-medium">Azot Host (Local &amp; Public)</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Onglets glissants escamotables (<code class="font-mono text-zinc-300">⌘S</code>).</p>
+          <p class="text-xs text-zinc-400 font-light">Hébergement Wi-Fi/LAN ou tunnel HTTPS public en 1 clic.</p>
         </div>
 
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
           <div class="flex items-center gap-3 text-white">
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              <rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/>
             </svg>
-            <h3 class="text-sm font-medium">Palette <kbd class="font-mono text-[11px] text-zinc-300">Ctrl+L</kbd></h3>
+            <h3 class="text-sm font-medium">Tab Sleeping &amp; Moniteur RAM</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Navigation et recherche flottante instantanée.</p>
+          <p class="text-xs text-zinc-400 font-light">Veille des onglets inactifs et libération mémoire instantanée.</p>
         </div>
 
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
@@ -588,29 +637,29 @@
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>
             </svg>
-            <h3 class="text-sm font-medium">Azot Shield</h3>
+            <h3 class="text-sm font-medium">Azot Shield &amp; VirusTotal</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Bloqueur natif de publicités et trackers.</p>
+          <p class="text-xs text-zinc-400 font-light">Temps gagné, anti-popups et scan VirusTotal intégré.</p>
         </div>
 
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
           <div class="flex items-center gap-3 text-white">
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            <h3 class="text-sm font-medium">Azot Guard</h3>
+            <h3 class="text-sm font-medium">Téléchargements &amp; Historique</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Détection en temps réel des sites malveillants.</p>
+          <p class="text-xs text-zinc-400 font-light">Gestionnaire intégré et suppression granulaire (7h, 24h, tout).</p>
         </div>
 
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
           <div class="flex items-center gap-3 text-white">
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
             </svg>
-            <h3 class="text-sm font-medium">Theme Studio</h3>
+            <h3 class="text-sm font-medium">Audio UI &amp; Mises à jour GitHub</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Personnalisation complète du verre dépoli.</p>
+          <p class="text-xs text-zinc-400 font-light">Sons synthétisés Web Audio API et détection des releases GitHub.</p>
         </div>
 
         <div class="glass-card rounded-2xl p-6 space-y-2.5">
@@ -618,9 +667,9 @@
             <svg class="w-4 h-4 text-zinc-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
               <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
             </svg>
-            <h3 class="text-sm font-medium">Extensions MV3</h3>
+            <h3 class="text-sm font-medium">Extensions MV3 &amp; Raccourcis</h3>
           </div>
-          <p class="text-xs text-zinc-400 font-light">Chargement direct d'extensions Chromium.</p>
+          <p class="text-xs text-zinc-400 font-light">Support des extensions Chromium et raccourcis <kbd class="font-mono text-[11px] text-zinc-300">Ctrl+T/W/L</kbd>.</p>
         </div>
       </div>
     </section>
@@ -696,9 +745,9 @@
               </svg>
               <h3 class="text-sm font-medium">Windows</h3>
             </div>
-            <span class="text-[10px] font-mono text-zinc-400">v1.0.0-beta</span>
+            <span class="text-[10px] font-mono text-zinc-300">v1.1.0</span>
           </div>
-          <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" onclick="triggerInstallerDownload('Azot Windows (.exe)')" class="w-full py-2.5 px-4 rounded-xl bg-white text-black text-center text-xs font-medium hover:bg-zinc-200 transition-all shadow-[0_0_25px_rgba(255,255,255,0.18)]">
+          <a href="https://github.com/CeBonVieuxAxel/Azot-Browser/releases/latest" target="_blank" rel="noopener noreferrer" onclick="triggerInstallerDownload('Azot-Setup-1.1.0.exe')" class="w-full py-2.5 px-4 rounded-xl bg-white text-black text-center text-xs font-medium hover:bg-zinc-200 transition-all shadow-[0_0_25px_rgba(255,255,255,0.18)]">
             Télécharger (.exe)
           </a>
         </div>
@@ -751,7 +800,7 @@
         </div>
 
         <div class="glass-pill rounded-xl p-3 sm:px-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <code id="ps-clone-cmd" class="font-mono text-xs text-zinc-400 overflow-x-auto whitespace-nowrap py-0.5">git clone https://github.com/CeBonVieuxAxel/Azot-Browser.git; cd Azot-Browser; npm install; npm run dist:win</code>
+          <code id="ps-clone-cmd" class="font-mono text-xs text-zinc-400 overflow-x-auto whitespace-nowrap py-0.5">git clone https://github.com/CeBonVieuxAxel/Azot-Browser.git; cd Azot-Browser; npm install; npm run build:setup</code>
           <button onclick="copyCommand('ps-clone-cmd', this)" class="shrink-0 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-colors">
             Copier
           </button>
@@ -764,7 +813,7 @@
   <footer class="relative z-10 border-t border-white/[0.07] py-8 px-4 sm:px-8">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400">
       <div>
-        Azot — Créé par <a href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener noreferrer" class="text-white font-medium hover:underline">Axel LEFEBVRE</a>
+        Azot v1.1.0 — Créé par <a href="https://github.com/CeBonVieuxAxel" target="_blank" rel="noopener noreferrer" class="text-white font-medium hover:underline">Axel LEFEBVRE</a>
       </div>
       <a href="https://github.com/CeBonVieuxAxel/Azot-Browser" target="_blank" rel="noopener noreferrer" class="font-mono hover:text-white transition-colors">
         https://github.com/CeBonVieuxAxel/Azot-Browser
@@ -793,12 +842,12 @@
           <span>+ Ouvrir un nouvel onglet</span>
           <kbd class="font-mono text-[10px] text-zinc-500">⌘T</kbd>
         </button>
-        <button onclick="executePaletteAction('Theme Studio ouvert')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/[0.07] text-zinc-300 hover:text-white transition-colors">
-          <span>Personnaliser le thème (Theme Studio)</span>
-          <kbd class="font-mono text-[10px] text-zinc-500">Theme</kbd>
+        <button onclick="closeCommandPalette(); toggleMockHostView();" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/[0.07] text-zinc-300 hover:text-white transition-colors">
+          <span>Ouvrir Azot Host (Hébergement Local &amp; Public)</span>
+          <kbd class="font-mono text-[10px] text-zinc-500">Host</kbd>
         </button>
-        <button onclick="executePaletteAction('Azot Shield : 2 trackers bloqués')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/[0.07] text-zinc-300 hover:text-white transition-colors">
-          <span>Statut Azot Shield & Azot Guard</span>
+        <button onclick="executePaletteAction('Azot Shield : 142 pubs bloquées · 19.8s gagnées')" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-white/[0.07] text-zinc-300 hover:text-white transition-colors">
+          <span>Statut Azot Shield &amp; VirusTotal Scanner</span>
           <kbd class="font-mono text-[10px] text-zinc-500">Actif</kbd>
         </button>
       </div>
@@ -1046,7 +1095,7 @@
         const rect = canvas.parentElement.getBoundingClientRect();
         canvas.width = rect.width || 600;
         canvas.height = rect.height || 400;
-        atoms = Array.from({ length: 18 }, (_, i) => ({
+        atoms = Array.from({ length: 18 }, () => ({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           r: 2.5 + Math.random() * 6.5,
@@ -1085,7 +1134,7 @@
     })();
 
     // =========================================================================
-    // 4. INTERACTIONS DU MOCKUP 3D (Inclinaison curseur, onglets, recherche)
+    // 4. INTERACTIONS DU MOCKUP 3D (Inclinaison curseur, onglets, recherche, Azot Host)
     // =========================================================================
     const browserFrame = document.getElementById('browser-3d-frame');
     const browserStage = document.getElementById('browser-stage');
@@ -1110,6 +1159,8 @@
     let mockTabs = ['Nouvel onglet'];
     let activeTabIndex = 0;
     let sidebarCollapsed = false;
+    let mockHostOpen = false;
+    let mockHostMode = 'local';
 
     function toggleMockSidebar() {
       const sb = document.getElementById('mock-sidebar');
@@ -1124,6 +1175,60 @@
         sb.classList.remove('w-12');
         labels.forEach(el => el.classList.remove('hidden'));
       }
+    }
+
+    function toggleMockHostView() {
+      mockHostOpen = !mockHostOpen;
+      const homeView = document.getElementById('mock-home-view');
+      const hostView = document.getElementById('mock-host-view');
+      if (mockHostOpen) {
+        homeView.classList.add('hidden');
+        hostView.classList.remove('hidden');
+        showMockToast('Azot Host · Serveur actif');
+      } else {
+        hostView.classList.add('hidden');
+        homeView.classList.remove('hidden');
+      }
+    }
+
+    function scrollToHostPreview() {
+      document.getElementById('browser-stage')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (!mockHostOpen) toggleMockHostView();
+    }
+
+    function setMockHostMode(mode) {
+      mockHostMode = mode;
+      const btnLocal = document.getElementById('mock-mode-local');
+      const btnOnline = document.getElementById('mock-mode-online');
+      const badge = document.getElementById('mock-host-status-badge');
+      const label = document.getElementById('mock-host-url-label');
+      const val = document.getElementById('mock-host-url-value');
+
+      if (mode === 'local') {
+        btnLocal.className = 'py-1.5 rounded-lg text-[11px] font-medium bg-white text-black transition-all';
+        btnOnline.className = 'py-1.5 rounded-lg text-[11px] font-medium text-zinc-400 hover:text-white transition-all';
+        badge.textContent = '· Local';
+        label.textContent = 'Réseau local (Wi-Fi / LAN)';
+        val.textContent = 'http://192.168.1.41:4040';
+      } else {
+        btnOnline.className = 'py-1.5 rounded-lg text-[11px] font-medium bg-white text-black transition-all';
+        btnLocal.className = 'py-1.5 rounded-lg text-[11px] font-medium text-zinc-400 hover:text-white transition-all';
+        badge.textContent = '· Public';
+        label.textContent = 'Lien public sécurisé (HTTPS)';
+        val.textContent = 'https://azot-preview.trycloudflare.com';
+      }
+      triggerProgressBar();
+    }
+
+    function copyMockHostUrl() {
+      const val = document.getElementById('mock-host-url-value').textContent;
+      const temp = document.createElement('textarea');
+      temp.value = val;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+      showMockToast('Adresse copiée !');
     }
 
     function renderMockTabs() {
@@ -1149,15 +1254,23 @@
 
       // Déplacement fluide de la pilule active (36px par slot : 32px hauteur + 4px gap)
       pill.style.transform = `translateY(${4 + activeTabIndex * 36}px)`;
+
+      // Simulation de la consommation RAM optimisée (Tab Sleeping)
+      const ramBadge = document.getElementById('mock-ram-badge');
+      if (ramBadge) {
+        ramBadge.textContent = `${128 + mockTabs.length * 14} Mo`;
+      }
     }
 
     function selectMockTab(index, title) {
       activeTabIndex = index;
+      if (mockHostOpen) toggleMockHostView();
       renderMockTabs();
       showMockToast(`Onglet : ${title}`);
     }
 
     function addMockTab() {
+      if (mockHostOpen) toggleMockHostView();
       if (mockTabs.length >= 4) {
         mockTabs = ['Nouvel onglet'];
         activeTabIndex = 0;
@@ -1388,19 +1501,6 @@
         closeCommandPalette();
       }
     });
-
-    // Détection automatique de l'OS pour le bouton principal
-    (function detectUserOS() {
-      const ua = navigator.userAgent.toLowerCase();
-      const label = document.getElementById('os-download-label');
-      if (ua.includes('mac')) {
-        label.textContent = 'Télécharger (Windows)';
-      } else if (ua.includes('linux')) {
-        label.textContent = 'Télécharger (Windows)';
-      } else {
-        label.textContent = 'Télécharger (Windows)';
-      }
-    })();
 
     let globalToastTimeout;
     function showGlobalToast(text) {
